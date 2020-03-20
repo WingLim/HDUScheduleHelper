@@ -273,29 +273,22 @@ function insert (id, html) {
     ul.insertAdjacentHTML('beforeend', html)
 }
 
-function findplace(weekday, ele){
+function findplace(weekday){
     switch (weekday) {
         case '周一':
-            insert('1', ele)
-            break;
+            return '1';
         case '周二':
-            insert('2', ele)
-            break;
+            return '2'
         case '周三':
-            insert('3', ele)
-            break;
+            return '3'
         case '周四':
-            insert('4', ele)
-            break;
+            return '4'
         case '周五':
-            insert('5', ele)
-            break;
+            return '5'
         case '周六':
-            insert('6', ele)
-            break;
+            return '6'
         case '周日':
-            insert('7', ele)
-            break;
+            return '7'
     }
 }
 function create (course) {
@@ -317,13 +310,35 @@ axios.get('https://api.limxw.com/schedule/json/18011317')
         r = resp
         resp.data.forEach(course => {
             let ele = create(course)
-            findplace(course.timeinfo.weekday, ele)
+            let place = findplace(course.timeinfo.weekday)
+            insert(place, ele)
         });
         renderSchedule()
     })
     .catch(function (err) {
         console.log(err)
     });
+// File#: _1_anim-menu-btn
+// Usage: codyhouse.co/license
+(function() {
+    var menuBtns = document.getElementsByClassName('js-anim-menu-btn');
+    if( menuBtns.length > 0 ) {
+      for(var i = 0; i < menuBtns.length; i++) {(function(i){
+        initMenuBtn(menuBtns[i]);
+      })(i);}
+  
+      function initMenuBtn(btn) {
+        btn.addEventListener('click', function(event){	
+          event.preventDefault();
+          var status = !Util.hasClass(btn, 'anim-menu-btn--state-b');
+          Util.toggleClass(btn, 'anim-menu-btn--state-b', status);
+          // emit custom event
+          var event = new CustomEvent('anim-menu-btn-clicked', {detail: status});
+          btn.dispatchEvent(event);
+        });
+      };
+    }
+  }());
 // File#: _1_custom-select
 // Usage: codyhouse.co/license
 (function() {
@@ -581,6 +596,62 @@ axios.get('https://api.limxw.com/schedule/json/18011317')
           checkCustomSelectClick(element, event.target);
         });
       });
+    }
+  }());
+// File#: _2_flexi-header
+// Usage: codyhouse.co/license
+(function() {
+    var flexHeader = document.getElementsByClassName('js-f-header');
+    if(flexHeader.length > 0) {
+      var menuTrigger = flexHeader[0].getElementsByClassName('js-anim-menu-btn')[0],
+        firstFocusableElement = getMenuFirstFocusable();
+  
+      // we'll use these to store the node that needs to receive focus when the mobile menu is closed 
+      var focusMenu = false;
+  
+      menuTrigger.addEventListener('anim-menu-btn-clicked', function(event){ // toggle menu visibility an small devices
+        Util.toggleClass(document.getElementsByClassName('f-header__nav')[0], 'f-header__nav--is-visible', event.detail);
+        menuTrigger.setAttribute('aria-expanded', event.detail);
+        if(event.detail) firstFocusableElement.focus(); // move focus to first focusable element
+        else if(focusMenu) {
+          focusMenu.focus();
+          focusMenu = false;
+        }
+      });
+  
+      // listen for key events
+      window.addEventListener('keyup', function(event){
+        // listen for esc key
+        if( (event.keyCode && event.keyCode == 27) || (event.key && event.key.toLowerCase() == 'escape' )) {
+          // close navigation on mobile if open
+          if(menuTrigger.getAttribute('aria-expanded') == 'true' && isVisible(menuTrigger)) {
+            focusMenu = menuTrigger; // move focus to menu trigger when menu is close
+            menuTrigger.click();
+          }
+        }
+        // listen for tab key
+        if( (event.keyCode && event.keyCode == 9) || (event.key && event.key.toLowerCase() == 'tab' )) {
+          // close navigation on mobile if open when nav loses focus
+          if(menuTrigger.getAttribute('aria-expanded') == 'true' && isVisible(menuTrigger) && !document.activeElement.closest('.js-f-header')) menuTrigger.click();
+        }
+      });
+  
+      function getMenuFirstFocusable() {
+        var focusableEle = flexHeader[0].getElementsByClassName('f-header__nav')[0].querySelectorAll('[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex]:not([tabindex="-1"]), [contenteditable], audio[controls], video[controls], summary'),
+          firstFocusable = false;
+        for(var i = 0; i < focusableEle.length; i++) {
+          if( focusableEle[i].offsetWidth || focusableEle[i].offsetHeight || focusableEle[i].getClientRects().length ) {
+            firstFocusable = focusableEle[i];
+            break;
+          }
+        }
+  
+        return firstFocusable;
+      };
+      
+      function isVisible(element) {
+        return (element.offsetWidth || element.offsetHeight || element.getClientRects().length);
+      };
     }
   }());
 // File#: _1_modal-window
@@ -1229,36 +1300,65 @@ function insert2list(ele, data) {
         <td class="table__cell" role="cell">${data.title}</td>        
         <td class="table__cell" role="cell">${data.teacher}</td>        
         <td class="table__cell" role="cell">${data.location}</td>
-        <td class="table__cell" role="cell">${week}</td>              
+        <td class="table__cell" role="cell">${data.time}</td>              
         <td class="table__cell" role="cell"> 
-            <button class="btn btn--subtle add-course" onclick="select(this)" data-content='${coursestr}'>选择</button>
+            <button class="btn btn--subtle" onclick="select(this)" data-content='${coursestr}'>
+            <span class="btn__content-a">选择</span>
+                              
+            <span class="btn__content-b">
+              <svg class="icon icon--is-spinning" aria-hidden="true" viewBox="0 0 16 16"><title>Loading</title><g stroke-width="1" fill="currentColor" stroke="currentColor"><path d="M.5,8a7.5,7.5,0,1,1,1.91,5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
+            </span>
+            <span class="btn__content-c">成功</span>
+            <span class="btn__content-d">课程冲突</span>
+            </button>
         </td>
     </tr>`
     ele.insertAdjacentHTML('beforeend', html)
 }
 
+function is_course_exist(start, place) {
+    let column = document.getElementById(place)
+    let a_list = column.getElementsByTagName('a')
+    for(let i = 0; i < a_list.length; i++) {
+        if (a_list[i].getAttribute('data-start') == start) {
+            return true
+        }
+    }
+    return false
+}
+
 function select(obj) {
+    Util.addClass(obj, 'btn--state-b')
     let str = obj.getAttribute('data-content')
     let json = JSON.parse(str)
     let html = create(json)
-    findplace(json.timeinfo.weekday, html)
-    renderSchedule()
+    let place = findplace(json.timeinfo.weekday)
+    if (is_course_exist(json.timeinfo.start, place)) {
+        Util.removeClass(obj, 'btn--state-b')
+        Util.addClass(obj, 'btn--state-d')
+    } else {
+        insert(place, html)
+        renderSchedule()
+        Util.removeClass(obj, 'btn--state-b')
+        Util.addClass(obj, 'btn--state-c')
+    }
 }
 
 search.addEventListener('click', function (e) {
     e.preventDefault();
+    Util.addClass(search, 'btn--state-b')
     empty()
     query = form.serialize()
     search_div = document.getElementById("search_div")
     axios.get('https://api.limxw.com/courses/query?' + query)
         .then(function (resp) {
-            r = resp
             createlist(search_div)
             renderTable()
             courses_list = document.getElementById("courses_list")
             resp.data.forEach(course => {
                 insert2list(courses_list, course)
             })
+            Util.removeClass(search, 'btn--state-b')
         })
         .catch(function (err) {
             console.log(err)
