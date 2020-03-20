@@ -54,12 +54,11 @@ function createlist(ele) {
                 <table class="table table--expanded@sm js-table width-100%" aria-label="Table Example">
                     <thead class="table__header table__header--sticky">
                       <tr class="table__row">
-                        <th class="table__cell text-left" scope="col">状态</th>
-                        <th class="table__cell text-left" scope="col">课程名</th>
-                        <th class="table__cell text-left" scope="col">任课教师</th>
-                        <th class="table__cell text-left" scope="col">上课地点</th>
-                        <th class="table__cell text-left" scope="col">上课时间</th>
-                        <th class="table__cell text-left" scope="col">Action</th>
+                        <th class="table__cell text-left" scope="col">课程</th>
+                        <th class="table__cell text-left" scope="col">教师</th>
+                        <th class="table__cell text-left" scope="col">地点</th>
+                        <th class="table__cell text-left" scope="col">时间</th>
+                        <th class="table__cell text-left" scope="col">动作</th>
                       </tr>
                     </thead>
                     
@@ -81,8 +80,7 @@ function empty() {
 function insert2list(ele, data) {
     let coursestr = JSON.stringify(data)
     let html = `
-    <tr class="table__row">
-        <td class="table__cell" role="cell">${data.status}</td>  
+    <tr class="table__row"> 
         <td class="table__cell" role="cell">${data.title}</td>        
         <td class="table__cell" role="cell">${data.teacher}</td>        
         <td class="table__cell" role="cell">${data.location}</td>
