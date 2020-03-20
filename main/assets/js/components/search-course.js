@@ -88,7 +88,15 @@ function insert2list(ele, data) {
         <td class="table__cell" role="cell">${data.location}</td>
         <td class="table__cell" role="cell">${data.time}</td>              
         <td class="table__cell" role="cell"> 
-            <button class="btn btn--subtle add-course" onclick="select(this)" data-content='${coursestr}'>选择</button>
+            <button class="btn btn--subtle" onclick="select(this)" data-content='${coursestr}'>
+            <span class="btn__content-a">选择</span>
+                              
+            <span class="btn__content-b">
+              <svg class="icon icon--is-spinning" aria-hidden="true" viewBox="0 0 16 16"><title>Loading</title><g stroke-width="1" fill="currentColor" stroke="currentColor"><path d="M.5,8a7.5,7.5,0,1,1,1.91,5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
+            </span>
+            <span class="btn__content-c">成功</span>
+            <span class="btn__content-d">课程冲突</span>
+            </button>
         </td>
     </tr>`
     ele.insertAdjacentHTML('beforeend', html)
@@ -106,32 +114,37 @@ function is_course_exist(start, place) {
 }
 
 function select(obj) {
+    Util.addClass(obj, 'btn--state-b')
     let str = obj.getAttribute('data-content')
     let json = JSON.parse(str)
     let html = create(json)
     let place = findplace(json.timeinfo.weekday)
     if (is_course_exist(json.timeinfo.start, place)) {
-        alert('课程冲突')
+        Util.removeClass(obj, 'btn--state-b')
+        Util.addClass(obj, 'btn--state-d')
     } else {
         insert(place, html)
         renderSchedule()
+        Util.removeClass(obj, 'btn--state-b')
+        Util.addClass(obj, 'btn--state-c')
     }
 }
 
 search.addEventListener('click', function (e) {
     e.preventDefault();
+    Util.addClass(search, 'btn--state-b')
     empty()
     query = form.serialize()
     search_div = document.getElementById("search_div")
     axios.get('https://api.limxw.com/courses/query?' + query)
         .then(function (resp) {
-            r = resp
             createlist(search_div)
             renderTable()
             courses_list = document.getElementById("courses_list")
             resp.data.forEach(course => {
                 insert2list(courses_list, course)
             })
+            Util.removeClass(search, 'btn--state-b')
         })
         .catch(function (err) {
             console.log(err)
