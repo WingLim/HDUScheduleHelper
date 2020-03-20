@@ -112,19 +112,18 @@ function is_course_exist(start, place) {
 }
 
 function select(obj) {
-    Util.addClass(obj, 'btn--state-b')
+    let succeed = document.getElementById('select-succeed')
+    let failed = document.getElementById('select-failed')
     let str = obj.getAttribute('data-content')
     let json = JSON.parse(str)
     let html = create(json)
     let place = findplace(json.timeinfo.weekday)
     if (is_course_exist(json.timeinfo.start, place)) {
-        Util.removeClass(obj, 'btn--state-b')
-        Util.addClass(obj, 'btn--state-d')
+        showHint(failed)
     } else {
         insert(place, html)
         renderSchedule()
-        Util.removeClass(obj, 'btn--state-b')
-        Util.addClass(obj, 'btn--state-c')
+        showHint(succeed)
     }
 }
 
