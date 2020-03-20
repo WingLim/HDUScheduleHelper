@@ -559,3 +559,482 @@
       opacity: 0.8;
     }
   }
+
+  /* -------------------------------- 
+
+File#: _1_modal-window
+Title: Modal Window
+Descr: A modal dialog used to display critical information
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+:root {
+    // close button
+    --modal-close-btn-size: 1.25em;
+    --modal-close-btn-padding: var(--space-sm);
+  }
+  
+  .modal {
+    position: fixed;
+    z-index: var(--zindex-overlay);
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: alpha(var(--color-contrast-higher), 0.9);
+    // hide element
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  
+  .modal--is-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  
+  .modal__content {
+    border-radius: var(--radius-md);
+    overflow: auto;
+    width: calc(100% - 2*var(--component-padding));
+    max-height: calc(100vh - 4*(var(--modal-close-btn-size) + var(--modal-close-btn-padding)));
+    background-color: var(--color-bg);
+  }
+  
+  .modal__header {
+    padding: var(--space-sm) var(--component-padding);
+    background-color: var(--color-contrast-lower);
+    // align title and icon (if icon is placed inside header)
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .modal__body {
+    height: 100%;
+    padding: var(--space-sm) var(--component-padding);
+  }
+  
+  .modal__footer {
+    padding: var(--component-padding);
+  }
+  
+  .modal__close-btn {
+    position: fixed;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    z-index: var(--zindex-fixed-element);
+    padding: var(--modal-close-btn-padding);
+    border-radius: 50%;
+    background-color: alpha(var(--color-contrast-higher), 0.8);
+    transition: .2s;
+  
+    &:hover {
+      background-color: var(--color-contrast-higher);
+    }
+  
+    .icon {
+      display: block;
+      color: var(--color-bg);
+      width: var(--modal-close-btn-size);
+      height: var(--modal-close-btn-size);
+    }
+  }
+  
+  // if close btn is inside content (e.g, inside header)
+  .modal__content {
+    .modal__close-btn { // alt close btn style (if inside modal content)
+      --modal-close-btn-size: 1em;
+      --modal-close-btn-padding: 0.5em;
+      position: static;
+      flex-shrink: 0;
+      background-color: var(--color-bg);
+      box-shadow: var(--shadow-sm);
+      transition: .2s;
+  
+      .icon {
+        color: inherit;
+      }
+  
+      &:hover {
+        box-shadow: var(--shadow-md);
+  
+        .icon {
+          color: var(--color-contrast-higher);
+        }
+      }
+    }
+  }
+  
+  // close btn sticky within content
+  .modal__content {
+    .modal__close-btn--sticky {
+      position: sticky;
+      float: right;
+      top: 0;
+      right: 0;
+    }
+  }
+  
+  // --header-is-fixed
+  .modal--header-is-fixed {
+    .modal__header {
+      position: sticky;
+      top: 0;
+    }
+  }
+  
+  // --footer-is-fixed
+  .modal--footer-is-fixed {
+    .modal__footer {
+      position: sticky;
+      bottom: 0;
+      background: var(--color-bg);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+  
+  // if animation = enabled
+  .modal[data-animation="on"] {
+    transition: opacity .3s, visibility .3s;
+  
+    .modal__content {
+      will-change: transform;
+      transition: transform .3s var(--ease-out);
+      transform: translateY(10%);
+    }
+  
+    &.modal--is-visible .modal__content {
+      transform: translateY(0);
+    }
+  }
+
+  /* -------------------------------- 
+
+File#: _1_custom-select
+Title: Custom Select
+Descr: Custom Select Control
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+:root {
+    --select-icon-size: 1em;
+    --select-icon-right-margin: var(--space-sm);
+  }
+  
+  .select {
+    position: relative;
+  }
+  
+  .select__input {
+    width: 100%;
+    padding-right: calc(var(--select-icon-size) + var(--select-icon-right-margin)) !important;
+  }
+  
+  .select__icon {
+    width: var(--select-icon-size);
+    height: var(--select-icon-size);
+    pointer-events: none;
+    position: absolute;
+    right: var(--select-icon-right-margin);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  // --custom-dropdown
+  :root {
+    --select-dropdown-gap: 4px; // distance between select control and custom dropdown
+  }
+  
+  .select__button { // created in JS - custom select control
+    width: 100%;
+  }
+  
+  .select__button[aria-expanded="true"] {
+    // custom select control if dropdown = visible
+  } 
+  
+  .select__dropdown { // created in JS - custom select dropdown
+    position: absolute;
+    left: 0;
+    top: 100%;
+    min-width: 200px;
+    max-height: 1px; // updated in JS
+    background-color: var(--color-bg);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-xxs) 0;
+    border-radius: var(--radius-md);
+    z-index: var(--zindex-popover);
+    margin-top: var(--select-dropdown-gap);
+    margin-bottom: var(--select-dropdown-gap);
+    overflow: auto;
+  
+    // reset spacing and text units - no longer affected by em units
+    @include spaceUnit(1rem);
+    @include textUnit(1rem);
+  
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s .2s, opacity .2s;
+  }
+  
+  .select__dropdown--right { // change dropdown position based on the available space
+    right: 0;
+    left: auto;
+  }
+  
+  .select__dropdown--up {
+    bottom: 100%;
+    top: auto;
+  }
+  
+  .select__button[aria-expanded="true"] + .select__dropdown {
+    visibility: visible;
+    opacity: 1;
+    transition: visibility 0s, opacity .2s;
+  }
+  
+  // custom <optgroup> list - include all <option>s if no <optgroup> available 
+  .select__list {
+    list-style: none !important;
+  }
+  
+  .select__list:not(:first-of-type) { 
+    padding-top: var(--space-xxs);
+  }
+  
+  .select__list:not(:last-of-type) {
+    border-bottom: 1px solid var(--color-contrast-low);
+    padding-bottom: var(--space-xxs);
+  }
+  
+  .select__item { // single item inside .select__list
+    display: block;
+    padding: var(--space-xs) var(--space-lg) var(--space-xs) var(--space-md);
+    color: var(--color-contrast-high);
+    width: 100%;
+    text-align: left;
+    // truncate text
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .select__item--optgroup { // custom <optgroup> label
+    font-size: var(--text-sm);
+    color: var(--color-contrast-medium);
+   }
+  
+  .select__item--option { // custom <option> label
+    cursor: pointer;
+  
+    &:hover {
+      background-color: var(--color-contrast-lower);
+    }
+  
+    &:focus {
+      outline: none;
+      background-color: alpha(var(--color-primary), 0.1);
+    }
+  
+    &[aria-selected=true] { // selected option
+      background-color: var(--color-primary);
+      color: var(--color-white);
+      position: relative;
+      @include fontSmooth;
+  
+      &::after { // check icon next to the selected language
+        content: '';
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 16px;
+        width: 16px;
+        right: var(--space-sm);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpolyline stroke-width='1.5' stroke='%23ffffff' fill='none' stroke-linecap='round' stroke-linejoin='round' points='1,9 5,13 15,3 '/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+      }
+    }
+  }
+  
+  html:not(.js ) .select .icon { // hide icon if JS = disabled
+    display: none;
+  }
+
+  /* -------------------------------- 
+
+File#: _1_table
+Title: Table
+Descr: Data tables used to organize and display information in rows and columns
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+.table {
+    position: relative;
+    z-index: 1;
+    border-collapse: separate;
+    border-spacing: 0 var(--space-md); // row gap
+    margin-top: calc(-2 * var(--space-md)); // set spacing variable = row gap ☝️
+  }
+  
+  .table__header { // hide table header - but keep it accessible to SR
+    @include srHide;
+  }
+  
+  .table__row {
+    .table__cell:first-child {
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+  
+    .table__cell:last-child {
+      border-radius: 0 0 var(--radius-md) var(--radius-md);
+      
+      &::after { // hide border bottom
+        display: none;
+      }
+    }
+  }
+  
+  .table__cell {
+    position: relative;
+    display: block; // fallback
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-md);
+    background-color: var(--color-contrast-lower);
+  
+    &::after { // border bottom
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: var(--space-md);
+      width: calc(100% - (2 * var(--space-md)));
+      height: 1px;
+      background-color: var(--color-contrast-low);
+    }
+  }
+  
+  .table__label { // inline labels -> visible when table header is hidden
+    font-weight: bold;
+    color: var(--color-contrast-higher);
+    margin-right: var(--space-md);
+  }
+  
+  .table:not(.table--expanded) {
+    .table__cell {
+      width: 100%;
+      text-align: right;
+    }
+  
+    .table__label {
+      text-align: left;
+    }
+  }
+  
+  .js {
+    .table {
+      opacity: 0; // hide table while it is initialized in JS
+    }
+  
+    .table--loaded {
+      opacity: 1;
+    }
+  }
+  
+  // --expanded - change table layout -> show standard rows and cols
+  .table--expanded {
+    // reset
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-top: 0;
+  
+    // new style
+    border-bottom: 2px solid var(--color-contrast-low);
+  
+    .table__header {
+      @include srShow;
+    
+      .table__cell { // header cell style
+        position: relative;
+        z-index: 10;
+        background-color: var(--color-bg);
+        box-shadow: 0 2px 0 var(--color-contrast-low);
+        font-weight: bold;
+        color: var(--color-contrast-higher);
+      }
+    }
+  
+    .table__body {
+      .table__row {
+        &:nth-child(odd) {
+          background-color: var(--color-contrast-lower);
+        }
+      }
+    }
+  
+    .table__cell {
+      // reset
+      border-radius: 0 !important;
+      display: table-cell;
+      padding: var(--space-sm);
+      background-color: transparent;
+  
+      &::after {
+        display: none;
+      }
+    }
+  
+    .table__label { // hide inline labels
+      display: none;
+    }
+  
+    // --header-sticky
+    .table__header--sticky {
+      .table__cell { // header cell style
+        position: sticky;
+        top: 0;
+      }
+    }
+  }
+  
+  // detect when the table needs to switch from the mobile layout to an expanded one - used in JS
+  [class*="table--expanded"]::before {
+    display: none;
+  }
+  
+  @each $mq in 'xs' 'sm' 'md' 'lg' 'xl' {
+    .table--expanded\@#{$mq}::before {
+      content: 'collapsed';
+      @include breakpoint(#{$mq}) {
+        content: 'expanded';
+      }
+    }
+  }
+
+  .scrollbar {
+    &::-webkit-scrollbar { // general scrollbar style
+      width: 12px;
+    }
+  
+    &::-webkit-scrollbar-track { // progress bar
+      background-color: var(--color-contrast-lower);
+    }
+  
+    &::-webkit-scrollbar-thumb { // handle
+      background-color: alpha(var(--color-contrast-higher), 0.9);
+      border-radius: 0;
+    }
+  
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: var(--color-contrast-higher);
+    }
+  }

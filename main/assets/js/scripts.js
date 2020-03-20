@@ -268,360 +268,786 @@ Math.easeInOutQuad = function (t, b, c, d) {
   };
   window.addEventListener('mousedown', detectClick);
 }());
-let insert = (weekday, html) => {
-    ul = document.getElementById(weekday)
+function insert (id, html) {
+    ul = document.getElementById(id)
     ul.insertAdjacentHTML('beforeend', html)
 }
-let create = (start, end, title, info) => {
+
+function findplace(weekday, ele){
+    switch (weekday) {
+        case '周一':
+            insert('1', ele)
+            break;
+        case '周二':
+            insert('2', ele)
+            break;
+        case '周三':
+            insert('3', ele)
+            break;
+        case '周四':
+            insert('4', ele)
+            break;
+        case '周五':
+            insert('5', ele)
+            break;
+        case '周六':
+            insert('6', ele)
+            break;
+        case '周日':
+            insert('7', ele)
+            break;
+    }
+}
+function create (course) {
     range = parseInt(Math.random() * 3 +1)
+    time = course.timeinfo
+    info = JSON.stringify(course)
     html = `<li class="cd-schedule__event">
-        <a data-start="${start}" data-end="${end}" href="#0" data-content="${info}" data-event="event-${range}">
-            <em class="cd-schedule__name">${title}</em>
+        <a data-start="${time.start}" data-end="${time.end}" href="#0" data-content='${info}' data-event="event-${range}">
+            <em class="cd-schedule__name">${course.title}</em>
            
         </a>
         </li>`
     return html
 }
 
+
 axios.get('https://api.limxw.com/schedule/json/18011317')
     .then(function (resp) {
         r = resp
         resp.data.forEach(course => {
-            time = course.timeinfo
-            info = `${course.teacher}+${time.week.start}+${time.week.end}+${time.week.flag}+${course.location}`
-            ele = create(
-                time.start,
-                time.end,
-                course.name,
-                info
-            )
-            switch (time.weekday) {
-                case 1:
-                    insert('1', ele)
-                    break;
-                case 2:
-                    insert('2', ele)
-                    break;
-                case 3:
-                    insert('3', ele)
-                    break;
-                case 4:
-                    insert('4', ele)
-                    break;
-                case 5:
-                    insert('5', ele)
-                    break;
-                case 6:
-                    insert('6', ele)
-                    break;
-                case 7:
-                    insert('7', ele)
-                    break;
-            }
+            let ele = create(course)
+            findplace(course.timeinfo.weekday, ele)
         });
         renderSchedule()
     })
     .catch(function (err) {
         console.log(err)
-    })
-//(function() {
-	// Schedule Template - by CodyHouse.co
-	function ScheduleTemplate( element ) {
-		this.element = element;
-		this.timelineItems = this.element.getElementsByClassName('cd-schedule__timeline')[0].getElementsByTagName('li');
-		this.timelineStart = getScheduleTimestamp(this.timelineItems[0].textContent);
-		this.timelineUnitDuration = getScheduleTimestamp(this.timelineItems[1].textContent) - getScheduleTimestamp(this.timelineItems[0].textContent);
-		
-		this.topInfoElement = this.element.getElementsByClassName('cd-schedule__top-info')[0];
-		this.singleEvents = this.element.getElementsByClassName('cd-schedule__event');
-		
-		this.modal = this.element.getElementsByClassName('cd-schedule-modal')[0];
-		this.modalHeader = this.element.getElementsByClassName('cd-schedule-modal__header')[0];
-		this.modalHeaderBg = this.element.getElementsByClassName('cd-schedule-modal__header-bg')[0];
-		this.modalBody = this.element.getElementsByClassName('cd-schedule-modal__body')[0];
-		this.modalBodyBg = this.element.getElementsByClassName('cd-schedule-modal__body-bg')[0];
-		this.modalClose = this.modal.getElementsByClassName('cd-schedule-modal__close')[0];
-		this.modalDate = this.modal.getElementsByClassName('cd-schedule-modal__date')[0];
-		this.modalEventName = this.modal.getElementsByClassName('cd-schedule-modal__name')[0];
-		this.coverLayer = this.element.getElementsByClassName('cd-schedule__cover-layer')[0];
+    });
+// File#: _1_custom-select
+// Usage: codyhouse.co/license
+(function() {
+    // NOTE: you need the js code only when using the --custom-dropdown variation of the Custom Select component. Default version does nor require JS.
+    
+    var CustomSelect = function(element) {
+      this.element = element;
+      this.select = this.element.getElementsByTagName('select')[0];
+      this.optGroups = this.select.getElementsByTagName('optgroup');
+      this.options = this.select.getElementsByTagName('option');
+      this.selectedOption = getSelectedOptionText(this);
+      this.selectId = this.select.getAttribute('id');
+      this.trigger = false;
+      this.dropdown = false;
+      this.customOptions = false;
+      this.arrowIcon = this.element.getElementsByTagName('svg');
+      this.label = document.querySelector('[for="'+this.selectId+'"]');
+  
+      this.optionIndex = 0; // used while building the custom dropdown
+  
+      initCustomSelect(this); // init markup
+      initCustomSelectEvents(this); // init event listeners
+    };
+    
+    function initCustomSelect(select) {
+      // create the HTML for the custom dropdown element
+      select.element.insertAdjacentHTML('beforeend', initButtonSelect(select) + initListSelect(select));
+      
+      // save custom elements
+      select.dropdown = select.element.getElementsByClassName('js-select__dropdown')[0];
+      select.trigger = select.element.getElementsByClassName('js-select__button')[0];
+      select.customOptions = select.dropdown.getElementsByClassName('js-select__item');
+      
+      // hide default select
+      Util.addClass(select.select, 'is-hidden');
+      if(select.arrowIcon.length > 0 ) select.arrowIcon[0].style.display = 'none';
+  
+      // place dropdown
+      placeDropdown(select);
+    };
+  
+    function initCustomSelectEvents(select) {
+      // option selection in dropdown
+      initSelection(select);
+  
+      // click events
+      select.trigger.addEventListener('click', function(){
+        toggleCustomSelect(select, false);
+      });
+      if(select.label) {
+        // move focus to custom trigger when clicking on <select> label
+        select.label.addEventListener('click', function(){
+          Util.moveFocus(select.trigger);
+        });
+      }
+      // keyboard navigation
+      select.dropdown.addEventListener('keydown', function(event){
+        if(event.keyCode && event.keyCode == 38 || event.key && event.key.toLowerCase() == 'arrowup') {
+          keyboardCustomSelect(select, 'prev', event);
+        } else if(event.keyCode && event.keyCode == 40 || event.key && event.key.toLowerCase() == 'arrowdown') {
+          keyboardCustomSelect(select, 'next', event);
+        }
+      });
+      // native <select> element has been updated -> update custom select as well
+      select.element.addEventListener('select-updated', function(event){
+        resetCustomSelect(select);
+      });
+    };
+  
+    function toggleCustomSelect(select, bool) {
+      var ariaExpanded;
+      if(bool) {
+        ariaExpanded = bool;
+      } else {
+        ariaExpanded = select.trigger.getAttribute('aria-expanded') == 'true' ? 'false' : 'true';
+      }
+      select.trigger.setAttribute('aria-expanded', ariaExpanded);
+      if(ariaExpanded == 'true') {
+        var selectedOption = getSelectedOption(select);
+        Util.moveFocus(selectedOption); // fallback if transition is not supported
+        select.dropdown.addEventListener('transitionend', function cb(){
+          Util.moveFocus(selectedOption);
+          select.dropdown.removeEventListener('transitionend', cb);
+        });
+        placeDropdown(select); // place dropdown based on available space
+      }
+    };
+  
+    function placeDropdown(select) {
+      // remove placement classes to reset position
+      Util.removeClass(select.dropdown, 'select__dropdown--right select__dropdown--up');
+      var triggerBoundingRect = select.trigger.getBoundingClientRect();
+      Util.toggleClass(select.dropdown, 'select__dropdown--right', (document.documentElement.clientWidth - 5 < triggerBoundingRect.left + select.dropdown.offsetWidth));
+      // check if there's enough space up or down
+      var moveUp = (window.innerHeight - triggerBoundingRect.bottom - 5) < triggerBoundingRect.top;
+      Util.toggleClass(select.dropdown, 'select__dropdown--up', moveUp);
+      // check if we need to set a max width
+      var maxHeight = moveUp ? triggerBoundingRect.top - 20 : window.innerHeight - triggerBoundingRect.bottom - 20;
+      // set max-height based on available space
+      select.dropdown.setAttribute('style', 'max-height: '+maxHeight+'px; width: '+triggerBoundingRect.width+'px;');
+    };
+  
+    function keyboardCustomSelect(select, direction, event) { // navigate custom dropdown with keyboard
+      event.preventDefault();
+      var index = Util.getIndexInArray(select.customOptions, document.activeElement);
+      index = (direction == 'next') ? index + 1 : index - 1;
+      if(index < 0) index = select.customOptions.length - 1;
+      if(index >= select.customOptions.length) index = 0;
+      Util.moveFocus(select.customOptions[index]);
+    };
+  
+    function initSelection(select) { // option selection
+      select.dropdown.addEventListener('click', function(event){
+        var option = event.target.closest('.js-select__item');
+        if(!option) return;
+        selectOption(select, option);
+      });
+    };
+    
+    function selectOption(select, option) {
+      if(option.hasAttribute('aria-selected') && option.getAttribute('aria-selected') == 'true') {
+        // selecting the same option
+        select.trigger.setAttribute('aria-expanded', 'false'); // hide dropdown
+      } else { 
+        var selectedOption = select.dropdown.querySelector('[aria-selected="true"]');
+        if(selectedOption) selectedOption.setAttribute('aria-selected', 'false');
+        option.setAttribute('aria-selected', 'true');
+        select.trigger.getElementsByClassName('js-select__label')[0].textContent = option.textContent;
+        select.trigger.setAttribute('aria-expanded', 'false');
+        // new option has been selected -> update native <select> element _ arai-label of trigger <button>
+        updateNativeSelect(select, option.getAttribute('data-index'));
+        updateTriggerAria(select); 
+      }
+      // move focus back to trigger
+      select.trigger.focus();
+    };
+  
+    function updateNativeSelect(select, index) {
+      select.select.selectedIndex = index;
+      select.select.dispatchEvent(new CustomEvent('change', {bubbles: true})); // trigger change event
+    };
+  
+    function updateTriggerAria(select) {
+      select.trigger.setAttribute('aria-label', select.options[select.select.selectedIndex].innerHTML+', '+select.label.textContent);
+    };
+  
+    function getSelectedOptionText(select) {// used to initialize the label of the custom select button
+      var label = '';
+      if('selectedIndex' in select.select) {
+        label = select.options[select.select.selectedIndex].text;
+      } else {
+        label = select.select.querySelector('option[selected]').text;
+      }
+      return label;
+  
+    };
+    
+    function initButtonSelect(select) { // create the button element -> custom select trigger
+      // check if we need to add custom classes to the button trigger
+      var customClasses = select.element.getAttribute('data-trigger-class') ? ' '+select.element.getAttribute('data-trigger-class') : '';
+  
+      var label = select.options[select.select.selectedIndex].innerHTML+', '+select.label.textContent;
+    
+      var button = '<button type="button" class="js-select__button select__button'+customClasses+'" aria-label="'+label+'" aria-expanded="false" aria-controls="'+select.selectId+'-dropdown"><span aria-hidden="true" class="js-select__label select__label">'+select.selectedOption+'</span>';
+      if(select.arrowIcon.length > 0 && select.arrowIcon[0].outerHTML) {
+        var clone = select.arrowIcon[0].cloneNode(true);
+        Util.removeClass(clone, 'select__icon');
+        button = button +clone.outerHTML;
+      }
+      
+      return button+'</button>';
+  
+    };
+  
+    function initListSelect(select) { // create custom select dropdown
+      var list = '<div class="js-select__dropdown select__dropdown" aria-describedby="'+select.selectId+'-description" id="'+select.selectId+'-dropdown">';
+      list = list + getSelectLabelSR(select);
+      if(select.optGroups.length > 0) {
+        for(var i = 0; i < select.optGroups.length; i++) {
+          var optGroupList = select.optGroups[i].getElementsByTagName('option'),
+            optGroupLabel = '<li><span class="select__item select__item--optgroup">'+select.optGroups[i].getAttribute('label')+'</span></li>';
+          list = list + '<ul class="select__list" role="listbox">'+optGroupLabel+getOptionsList(select, optGroupList) + '</ul>';
+        }
+      } else {
+        list = list + '<ul class="select__list" role="listbox">'+getOptionsList(select, select.options) + '</ul>';
+      }
+      return list;
+    };
+  
+    function getSelectLabelSR(select) {
+      if(select.label) {
+        return '<p class="sr-only" id="'+select.selectId+'-description">'+select.label.textContent+'</p>'
+      } else {
+        return '';
+      }
+    };
+    
+    function resetCustomSelect(select) {
+      // <select> element has been updated (using an external control) - update custom select
+      var selectedOption = select.dropdown.querySelector('[aria-selected="true"]');
+      if(selectedOption) selectedOption.setAttribute('aria-selected', 'false');
+      var option = select.dropdown.querySelector('.js-select__item[data-index="'+select.select.selectedIndex+'"]');
+      option.setAttribute('aria-selected', 'true');
+      select.trigger.getElementsByClassName('js-select__label')[0].textContent = option.textContent;
+      select.trigger.setAttribute('aria-expanded', 'false');
+      updateTriggerAria(select); 
+    };
+  
+    function getOptionsList(select, options) {
+      var list = '';
+      for(var i = 0; i < options.length; i++) {
+        var selected = options[i].hasAttribute('selected') ? ' aria-selected="true"' : ' aria-selected="false"';
+        list = list + '<li><button type="button" class="reset js-select__item select__item select__item--option" role="option" data-value="'+options[i].value+'" '+selected+' data-index="'+select.optionIndex+'">'+options[i].text+'</button></li>';
+        select.optionIndex = select.optionIndex + 1;
+      };
+      return list;
+    };
+  
+    function getSelectedOption(select) {
+      var option = select.dropdown.querySelector('[aria-selected="true"]');
+      if(option) return option;
+      else return select.dropdown.getElementsByClassName('js-select__item')[0];
+    };
+  
+    function moveFocusToSelectTrigger(select) {
+      if(!document.activeElement.closest('.js-select')) return
+      select.trigger.focus();
+    };
+    
+    function checkCustomSelectClick(select, target) { // close select when clicking outside it
+      if( !select.element.contains(target) ) toggleCustomSelect(select, 'false');
+    };
+    
+    //initialize the CustomSelect objects
+    var customSelect = document.getElementsByClassName('js-select');
+    if( customSelect.length > 0 ) {
+      var selectArray = [];
+      for( var i = 0; i < customSelect.length; i++) {
+        (function(i){selectArray.push(new CustomSelect(customSelect[i]));})(i);
+      }
+  
+      // listen for key events
+      window.addEventListener('keyup', function(event){
+        if( event.keyCode && event.keyCode == 27 || event.key && event.key.toLowerCase() == 'escape' ) {
+          // close custom select on 'Esc'
+          selectArray.forEach(function(element){
+            moveFocusToSelectTrigger(element); // if focus is within dropdown, move it to dropdown trigger
+            toggleCustomSelect(element, 'false'); // close dropdown
+          });
+        } 
+      });
+      // close custom select when clicking outside it
+      window.addEventListener('click', function(event){
+        selectArray.forEach(function(element){
+          checkCustomSelectClick(element, event.target);
+        });
+      });
+    }
+  }());
+// File#: _1_modal-window
+// Usage: codyhouse.co/license
+(function() {
+    var Modal = function(element) {
+      this.element = element;
+      this.triggers = document.querySelectorAll('[aria-controls="'+this.element.getAttribute('id')+'"]');
+      this.firstFocusable = null;
+      this.lastFocusable = null;
+      this.selectedTrigger = null;
+      this.showClass = "modal--is-visible";
+      this.initModal();
+    };
+  
+    Modal.prototype.initModal = function() {
+      var self = this;
+      //open modal when clicking on trigger buttons
+      if ( this.triggers ) {
+        for(var i = 0; i < this.triggers.length; i++) {
+          this.triggers[i].addEventListener('click', function(event) {
+            event.preventDefault();
+            self.selectedTrigger = event.target;
+            self.showModal();
+            self.initModalEvents();
+          });
+        }
+      }
+  
+      // listen to the openModal event -> open modal without a trigger button
+      this.element.addEventListener('openModal', function(event){
+        if(event.detail) self.selectedTrigger = event.detail;
+        self.showModal();
+        self.initModalEvents();
+      });
+  
+      // listen to the closeModal event -> close modal without a trigger button
+      this.element.addEventListener('closeModal', function(event){
+        if(event.detail) self.selectedTrigger = event.detail;
+        self.closeModal();
+      });
+    };
+  
+    Modal.prototype.showModal = function() {
+      var self = this;
+      Util.addClass(this.element, this.showClass);
+      this.getFocusableElements();
+      this.firstFocusable.focus();
+      // wait for the end of transitions before moving focus
+      this.element.addEventListener("transitionend", function cb(event) {
+        self.firstFocusable.focus();
+        self.element.removeEventListener("transitionend", cb);
+      });
+      this.emitModalEvents('modalIsOpen');
+    };
+  
+    Modal.prototype.closeModal = function() {
+      if(!Util.hasClass(this.element, this.showClass)) return;
+      Util.removeClass(this.element, this.showClass);
+      this.firstFocusable = null;
+      this.lastFocusable = null;
+      if(this.selectedTrigger) this.selectedTrigger.focus();
+      //remove listeners
+      this.cancelModalEvents();
+      this.emitModalEvents('modalIsClose');
+    };
+  
+    Modal.prototype.initModalEvents = function() {
+      //add event listeners
+      this.element.addEventListener('keydown', this);
+      this.element.addEventListener('click', this);
+    };
+  
+    Modal.prototype.cancelModalEvents = function() {
+      //remove event listeners
+      this.element.removeEventListener('keydown', this);
+      this.element.removeEventListener('click', this);
+    };
+  
+    Modal.prototype.handleEvent = function (event) {
+      switch(event.type) {
+        case 'click': {
+          this.initClick(event);
+        }
+        case 'keydown': {
+          this.initKeyDown(event);
+        }
+      }
+    };
+  
+    Modal.prototype.initKeyDown = function(event) {
+      if( event.keyCode && event.keyCode == 9 || event.key && event.key == 'Tab' ) {
+        //trap focus inside modal
+        this.trapFocus(event);
+      } else if( (event.keyCode && event.keyCode == 13 || event.key && event.key == 'Enter') && event.target.closest('.js-modal__close')) {
+        event.preventDefault();
+        this.closeModal(); // close modal when pressing Enter on close button
+      }	
+    };
+  
+    Modal.prototype.initClick = function(event) {
+      //close modal when clicking on close button or modal bg layer 
+      if( !event.target.closest('.js-modal__close') && !Util.hasClass(event.target, 'js-modal') ) return;
+      event.preventDefault();
+      this.closeModal();
+    };
+  
+    Modal.prototype.trapFocus = function(event) {
+      if( this.firstFocusable == document.activeElement && event.shiftKey) {
+        //on Shift+Tab -> focus last focusable element when focus moves out of modal
+        event.preventDefault();
+        this.lastFocusable.focus();
+      }
+      if( this.lastFocusable == document.activeElement && !event.shiftKey) {
+        //on Tab -> focus first focusable element when focus moves out of modal
+        event.preventDefault();
+        this.firstFocusable.focus();
+      }
+    }
+  
+    Modal.prototype.getFocusableElements = function() {
+      //get all focusable elements inside the modal
+      var allFocusable = this.element.querySelectorAll('[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex]:not([tabindex="-1"]), [contenteditable], audio[controls], video[controls], summary');
+      this.getFirstVisible(allFocusable);
+      this.getLastVisible(allFocusable);
+    };
+  
+    Modal.prototype.getFirstVisible = function(elements) {
+      //get first visible focusable element inside the modal
+      for(var i = 0; i < elements.length; i++) {
+        if( elements[i].offsetWidth || elements[i].offsetHeight || elements[i].getClientRects().length ) {
+          this.firstFocusable = elements[i];
+          return true;
+        }
+      }
+    };
+  
+    Modal.prototype.getLastVisible = function(elements) {
+      //get last visible focusable element inside the modal
+      for(var i = elements.length - 1; i >= 0; i--) {
+        if( elements[i].offsetWidth || elements[i].offsetHeight || elements[i].getClientRects().length ) {
+          this.lastFocusable = elements[i];
+          return true;
+        }
+      }
+    };
+  
+    Modal.prototype.emitModalEvents = function(eventName) {
+      var event = new CustomEvent(eventName, {detail: this.selectedTrigger});
+      this.element.dispatchEvent(event);
+    };
+  
+    //initialize the Modal objects
+    var modals = document.getElementsByClassName('js-modal');
+    if( modals.length > 0 ) {
+      var modalArrays = [];
+      for( var i = 0; i < modals.length; i++) {
+        (function(i){modalArrays.push(new Modal(modals[i]));})(i);
+      }
+  
+      window.addEventListener('keydown', function(event){ //close modal window on esc
+        if(event.keyCode && event.keyCode == 27 || event.key && event.key.toLowerCase() == 'escape') {
+          for( var i = 0; i < modalArrays.length; i++) {
+            (function(i){modalArrays[i].closeModal();})(i);
+          };
+        }
+      });
+    }
+  }());
+(function (window) {
+    // Schedule Template - by CodyHouse.co
+    function ScheduleTemplate(element) {
+        this.element = element;
+        this.timelineItems = this.element.getElementsByClassName('cd-schedule__timeline')[0].getElementsByTagName('li');
+        this.timelineStart = getScheduleTimestamp(this.timelineItems[0].textContent);
+        this.timelineUnitDuration = getScheduleTimestamp(this.timelineItems[1].textContent) - getScheduleTimestamp(this.timelineItems[0].textContent);
 
-		this.modalMaxWidth = 800;
-		this.modalMaxHeight = 480;
+        this.topInfoElement = this.element.getElementsByClassName('cd-schedule__top-info')[0];
+        this.singleEvents = this.element.getElementsByClassName('cd-schedule__event');
 
-		this.animating = false;
-		this.supportAnimation = Util.cssSupports('transition');
+        this.modal = this.element.getElementsByClassName('cd-schedule-modal')[0];
+        this.modalHeader = this.element.getElementsByClassName('cd-schedule-modal__header')[0];
+        this.modalHeaderBg = this.element.getElementsByClassName('cd-schedule-modal__header-bg')[0];
+        this.modalBody = this.element.getElementsByClassName('cd-schedule-modal__body')[0];
+        this.modalBodyBg = this.element.getElementsByClassName('cd-schedule-modal__body-bg')[0];
+        this.modalClose = this.modal.getElementsByClassName('cd-schedule-modal__close')[0];
+        this.modalDate = this.modal.getElementsByClassName('cd-schedule-modal__date')[0];
+        this.modalEventName = this.modal.getElementsByClassName('cd-schedule-modal__name')[0];
+        this.coverLayer = this.element.getElementsByClassName('cd-schedule__cover-layer')[0];
 
-		this.initSchedule();
-	};
+        this.modalMaxWidth = 800;
+        this.modalMaxHeight = 480;
 
-	ScheduleTemplate.prototype.initSchedule = function() {
-		this.scheduleReset();
-		this.initEvents();
-	};
+        this.animating = false;
+        this.supportAnimation = Util.cssSupports('transition');
 
-	ScheduleTemplate.prototype.scheduleReset = function() {
-		// according to the mq value, init the style of the template
-		var mq = this.mq(),
-			loaded = Util.hasClass(this.element, 'js-schedule-loaded'),
-			modalOpen = Util.hasClass(this.modal, 'cd-schedule-modal--open');
-		if( mq == 'desktop' && !loaded ) {
-			Util.addClass(this.element, 'js-schedule-loaded');
-			this.placeEvents();
-			modalOpen && this.checkEventModal(modalOpen);
-		} else if( mq == 'mobile' && loaded) {
-			//in this case you are on a mobile version (first load or resize from desktop)
-			Util.removeClass(this.element, 'cd-schedule--loading js-schedule-loaded');
-			this.resetEventsStyle();
-			modalOpen && this.checkEventModal();
-		} else if( mq == 'desktop' && modalOpen ) {
-			//on a mobile version with modal open - need to resize/move modal window
-			this.checkEventModal(modalOpen);
-			Util.removeClass(this.element, 'cd-schedule--loading');
-		} else {
-			Util.removeClass(this.element, 'cd-schedule--loading');
-		}
-	};
+        this.initSchedule();
+    };
 
-	ScheduleTemplate.prototype.resetEventsStyle = function() {
-		// remove js style applied to the single events
-		for(var i = 0; i < this.singleEvents.length; i++) {
-			this.singleEvents[i].removeAttribute('style');
-		}
-	};
+    ScheduleTemplate.prototype.initSchedule = function () {
+        this.scheduleReset();
+        this.initEvents();
+    };
 
-	ScheduleTemplate.prototype.placeEvents = function() {
-		// on big devices - place events in the template according to their time/day
-		var self = this,
-			slotHeight = this.topInfoElement.offsetHeight;
-		for(var i = 0; i < this.singleEvents.length; i++) {
-			var anchor = this.singleEvents[i].getElementsByTagName('a')[0];
-			var start = getScheduleTimestamp(anchor.getAttribute('data-start')),
-				duration = getScheduleTimestamp(anchor.getAttribute('data-end')) - start;
+    ScheduleTemplate.prototype.scheduleReset = function () {
+        // according to the mq value, init the style of the template
+        var mq = this.mq(),
+            loaded = Util.hasClass(this.element, 'js-schedule-loaded'),
+            modalOpen = Util.hasClass(this.modal, 'cd-schedule-modal--open');
+        if (mq == 'desktop' && !loaded) {
+            Util.addClass(this.element, 'js-schedule-loaded');
+            this.placeEvents();
+            modalOpen && this.checkEventModal(modalOpen);
+        } else if (mq == 'mobile' && loaded) {
+            //in this case you are on a mobile version (first load or resize from desktop)
+            Util.removeClass(this.element, 'cd-schedule--loading js-schedule-loaded');
+            this.resetEventsStyle();
+            modalOpen && this.checkEventModal();
+        } else if (mq == 'desktop' && modalOpen) {
+            //on a mobile version with modal open - need to resize/move modal window
+            this.checkEventModal(modalOpen);
+            Util.removeClass(this.element, 'cd-schedule--loading');
+        } else {
+            Util.removeClass(this.element, 'cd-schedule--loading');
+        }
+    };
 
-			var eventTop = slotHeight*(start - self.timelineStart)/self.timelineUnitDuration,
-				eventHeight = slotHeight*duration/self.timelineUnitDuration;
+    ScheduleTemplate.prototype.resetEventsStyle = function () {
+        // remove js style applied to the single events
+        for (var i = 0; i < this.singleEvents.length; i++) {
+            this.singleEvents[i].removeAttribute('style');
+        }
+    };
 
-			this.singleEvents[i].setAttribute('style', 'top: '+(eventTop-1)+'px; height: '+(eventHeight +1)+'px');
-		}
+    ScheduleTemplate.prototype.placeEvents = function () {
+        // on big devices - place events in the template according to their time/day
+        var self = this,
+            slotHeight = this.topInfoElement.offsetHeight;
+        for (var i = 0; i < this.singleEvents.length; i++) {
+            var anchor = this.singleEvents[i].getElementsByTagName('a')[0];
+            var start = getScheduleTimestamp(anchor.getAttribute('data-start')),
+                duration = getScheduleTimestamp(anchor.getAttribute('data-end')) - start;
 
-		Util.removeClass(this.element, 'cd-schedule--loading');
-	};
+            var eventTop = slotHeight * (start - self.timelineStart) / self.timelineUnitDuration,
+                eventHeight = slotHeight * duration / self.timelineUnitDuration;
 
-	ScheduleTemplate.prototype.initEvents = function() {
-		var self = this;
-		for(var i = 0; i < this.singleEvents.length; i++) {
-			// open modal when user selects an event
-			this.singleEvents[i].addEventListener('click', function(event){
-				event.preventDefault();
-				if(!self.animating) self.openModal(this.getElementsByTagName('a')[0]);
-			});
-		}
-		//close modal window
-		this.modalClose.addEventListener('click', function(event){
-			event.preventDefault();
-			if( !self.animating ) self.closeModal();
-		});
-		this.coverLayer.addEventListener('click', function(event){
-			event.preventDefault();
-			if( !self.animating ) self.closeModal();
-		});
-	};
+            this.singleEvents[i].setAttribute('style', 'top: ' + (eventTop - 1) + 'px; height: ' + (eventHeight + 1) + 'px');
+        }
 
-	ScheduleTemplate.prototype.openModal = function(target) {
-		var self = this;
-		var mq = self.mq();
-		this.animating = true;
+        Util.removeClass(this.element, 'cd-schedule--loading');
+    };
 
-		//update event name and time
-		this.modalEventName.textContent = target.getElementsByTagName('em')[0].textContent;
-		this.modalDate.textContent = target.getAttribute('data-start')+' - '+target.getAttribute('data-end');
-		this.modal.setAttribute('data-event', target.getAttribute('data-event'));
+    ScheduleTemplate.prototype.initEvents = function () {
+        var self = this;
+        for (var i = 0; i < this.singleEvents.length; i++) {
+            // open modal when user selects an event
+            this.singleEvents[i].addEventListener('click', function (event) {
+                event.preventDefault();
+                if (!self.animating) self.openModal(this.getElementsByTagName('a')[0]);
+            });
+        }
+        //close modal window
+        this.modalClose.addEventListener('click', function (event) {
+            event.preventDefault();
+            if (!self.animating) self.closeModal();
+        });
+        this.coverLayer.addEventListener('click', function (event) {
+            event.preventDefault();
+            if (!self.animating) self.closeModal();
+        });
+    };
 
-		//update event content
+    ScheduleTemplate.prototype.openModal = function (target) {
+        var self = this;
+        var mq = self.mq();
+        this.animating = true;
+
+        //update event name and time
+        this.modalEventName.textContent = target.getElementsByTagName('em')[0].textContent;
+        this.modalDate.textContent = target.getAttribute('data-start') + ' - ' + target.getAttribute('data-end');
+        this.modal.setAttribute('data-event', target.getAttribute('data-event'));
+
+        //update event content
         //this.loadEventContent(target.getAttribute('data-content'));
         this.addCourseInfo(target.getAttribute('data-content'));
 
-		Util.addClass(this.modal, 'cd-schedule-modal--open');
-		
-		setTimeout(function(){
-			//fixes a flash when an event is selected - desktop version only
-			Util.addClass(target.closest('li'), 'cd-schedule__event--selected');
-		}, 10);
+        Util.addClass(this.modal, 'cd-schedule-modal--open');
 
-		if( mq == 'mobile' ) {
-			self.modal.addEventListener('transitionend', function cb(){
-				self.animating = false;
-				self.modal.removeEventListener('transitionend', cb);
-			});
-		} else {
-			var eventPosition = target.getBoundingClientRect(),
-				eventTop = eventPosition.top,
-				eventLeft = eventPosition.left,
-				eventHeight = target.offsetHeight,
-				eventWidth = target.offsetWidth;
+        setTimeout(function () {
+            //fixes a flash when an event is selected - desktop version only
+            Util.addClass(target.closest('li'), 'cd-schedule__event--selected');
+        }, 10);
 
-			var windowWidth = window.innerWidth,
-				windowHeight = window.innerHeight;
+        if (mq == 'mobile') {
+            self.modal.addEventListener('transitionend', function cb() {
+                self.animating = false;
+                self.modal.removeEventListener('transitionend', cb);
+            });
+        } else {
+            var eventPosition = target.getBoundingClientRect(),
+                eventTop = eventPosition.top,
+                eventLeft = eventPosition.left,
+                eventHeight = target.offsetHeight,
+                eventWidth = target.offsetWidth;
 
-			var modalWidth = ( windowWidth*.8 > self.modalMaxWidth ) ? self.modalMaxWidth : windowWidth*.8,
-				modalHeight = ( windowHeight*.8 > self.modalMaxHeight ) ? self.modalMaxHeight : windowHeight*.8;
+            var windowWidth = window.innerWidth,
+                windowHeight = window.innerHeight;
 
-			var modalTranslateX = parseInt((windowWidth - modalWidth)/2 - eventLeft),
-				modalTranslateY = parseInt((windowHeight - modalHeight)/2 - eventTop);
-			
-			var HeaderBgScaleY = modalHeight/eventHeight,
-				BodyBgScaleX = (modalWidth - eventWidth);
+            var modalWidth = (windowWidth * .8 > self.modalMaxWidth) ? self.modalMaxWidth : windowWidth * .8,
+                modalHeight = (windowHeight * .8 > self.modalMaxHeight) ? self.modalMaxHeight : windowHeight * .8;
 
-			//change modal height/width and translate it
-			self.modal.setAttribute('style', 'top:'+eventTop+'px;left:'+eventLeft+'px;height:'+modalHeight+'px;width:'+modalWidth+'px;transform: translateY('+modalTranslateY+'px) translateX('+modalTranslateX+'px)');
-			//set modalHeader width
-			self.modalHeader.setAttribute('style', 'width:'+eventWidth+'px');
-			//set modalBody left margin
-			self.modalBody.setAttribute('style', 'margin-left:'+eventWidth+'px');
-			//change modalBodyBg height/width ans scale it
-			self.modalBodyBg.setAttribute('style', 'height:'+eventHeight+'px; width: 1px; transform: scaleY('+HeaderBgScaleY+') scaleX('+BodyBgScaleX+')');
-			//change modal modalHeaderBg height/width and scale it
-			self.modalHeaderBg.setAttribute('style', 'height: '+eventHeight+'px; width: '+eventWidth+'px; transform: scaleY('+HeaderBgScaleY+')');
-			
-			self.modalHeaderBg.addEventListener('transitionend', function cb(){
-				//wait for the  end of the modalHeaderBg transformation and show the modal content
-				self.animating = false;
-				Util.addClass(self.modal, 'cd-schedule-modal--animation-completed');
-				self.modalHeaderBg.removeEventListener('transitionend', cb);
-			});
-		}
+            var modalTranslateX = parseInt((windowWidth - modalWidth) / 2 - eventLeft),
+                modalTranslateY = parseInt((windowHeight - modalHeight) / 2 - eventTop);
 
-		//if browser do not support transitions -> no need to wait for the end of it
-		this.animationFallback();
-	};
+            var HeaderBgScaleY = modalHeight / eventHeight,
+                BodyBgScaleX = (modalWidth - eventWidth);
 
-	ScheduleTemplate.prototype.closeModal = function() {
-		var self = this;
-		var mq = self.mq();
+            //change modal height/width and translate it
+            self.modal.setAttribute('style', 'top:' + eventTop + 'px;left:' + eventLeft + 'px;height:' + modalHeight + 'px;width:' + modalWidth + 'px;transform: translateY(' + modalTranslateY + 'px) translateX(' + modalTranslateX + 'px)');
+            //set modalHeader width
+            self.modalHeader.setAttribute('style', 'width:' + eventWidth + 'px');
+            //set modalBody left margin
+            self.modalBody.setAttribute('style', 'margin-left:' + eventWidth + 'px');
+            //change modalBodyBg height/width ans scale it
+            self.modalBodyBg.setAttribute('style', 'height:' + eventHeight + 'px; width: 1px; transform: scaleY(' + HeaderBgScaleY + ') scaleX(' + BodyBgScaleX + ')');
+            //change modal modalHeaderBg height/width and scale it
+            self.modalHeaderBg.setAttribute('style', 'height: ' + eventHeight + 'px; width: ' + eventWidth + 'px; transform: scaleY(' + HeaderBgScaleY + ')');
 
-		var item = self.element.getElementsByClassName('cd-schedule__event--selected')[0],
-			target = item.getElementsByTagName('a')[0];
+            self.modalHeaderBg.addEventListener('transitionend', function cb() {
+                //wait for the  end of the modalHeaderBg transformation and show the modal content
+                self.animating = false;
+                Util.addClass(self.modal, 'cd-schedule-modal--animation-completed');
+                self.modalHeaderBg.removeEventListener('transitionend', cb);
+            });
+        }
 
-		this.animating = true;
-
-		if( mq == 'mobile' ) {
-			Util.removeClass(this.modal, 'cd-schedule-modal--open');
-			self.modal.addEventListener('transitionend', function cb(){
-				Util.removeClass(self.modal, 'cd-schedule-modal--content-loaded');
-				Util.removeClass(item, 'cd-schedule__event--selected');
-				self.animating = false;
-				self.modal.removeEventListener('transitionend', cb);
-			});
-		} else {
-			var eventPosition = target.getBoundingClientRect(),
-				eventTop = eventPosition.top,
-				eventLeft = eventPosition.left,
-				eventHeight = target.offsetHeight,
-				eventWidth = target.offsetWidth;
-
-			var modalStyle = window.getComputedStyle(self.modal),
-				modalTop = Number(modalStyle.getPropertyValue('top').replace('px', '')),
-				modalLeft = Number(modalStyle.getPropertyValue('left').replace('px', ''));
-
-			var modalTranslateX = eventLeft - modalLeft,
-				modalTranslateY = eventTop - modalTop;
-
-			Util.removeClass(this.modal, 'cd-schedule-modal--open cd-schedule-modal--animation-completed');
-
-			//change modal width/height and translate it
-			self.modal.style.width = eventWidth+'px';self.modal.style.height = eventHeight+'px';self.modal.style.transform = 'translateX('+modalTranslateX+'px) translateY('+modalTranslateY+'px)';
-			//scale down modalBodyBg element
-			self.modalBodyBg.style.transform = 'scaleX(0) scaleY(1)';
-			//scale down modalHeaderBg element
-			// self.modalHeaderBg.setAttribute('style', 'transform: scaleY(1)');
-			self.modalHeaderBg.style.transform = 'scaleY(1)';
-
-			self.modalHeaderBg.addEventListener('transitionend', function cb(){
-				//wait for the  end of the modalHeaderBg transformation and reset modal style
-				Util.addClass(self.modal, 'cd-schedule-modal--no-transition');
-				setTimeout(function(){
-					self.modal.removeAttribute('style');
-					self.modalBody.removeAttribute('style');
-					self.modalHeader.removeAttribute('style');
-					self.modalHeaderBg.removeAttribute('style');
-					self.modalBodyBg.removeAttribute('style');
-				}, 10);
-				setTimeout(function(){
-					Util.removeClass(self.modal, 'cd-schedule-modal--no-transition');
-				}, 20);
-				self.animating = false;
-				Util.removeClass(self.modal, 'cd-schedule-modal--content-loaded');
-				Util.removeClass(item, 'cd-schedule__event--selected');
-				self.modalHeaderBg.removeEventListener('transitionend', cb);
-			});
-		}
-
-		//if browser do not support transitions -> no need to wait for the end of it
-		this.animationFallback();
-	};
-
-	ScheduleTemplate.prototype.checkEventModal = function(modalOpen) {
-		// this function is used on resize to reset events/modal style
-		this.animating = true;
-		var self = this;
-		var mq = this.mq();
-		if( mq == 'mobile' ) {
-			//reset modal style on mobile
-			self.modal.removeAttribute('style');
-			self.modalBody.removeAttribute('style');
-			self.modalHeader.removeAttribute('style');
-			self.modalHeaderBg.removeAttribute('style');
-			self.modalBodyBg.removeAttribute('style');
-			Util.removeClass(self.modal, 'cd-schedule-modal--no-transition');
-			self.animating = false;	
-		} else if( mq == 'desktop' && modalOpen) {
-			Util.addClass(self.modal, 'cd-schedule-modal--no-transition cd-schedule-modal--animation-completed');
-			var item = self.element.getElementsByClassName('cd-schedule__event--selected')[0],
-				target = item.getElementsByTagName('a')[0];
-
-			var eventPosition = target.getBoundingClientRect(),
-				eventTop = eventPosition.top,
-				eventLeft = eventPosition.left,
-				eventHeight = target.offsetHeight,
-				eventWidth = target.offsetWidth;
-
-			var windowWidth = window.innerWidth,
-				windowHeight = window.innerHeight;
-
-			var modalWidth = ( windowWidth*.8 > self.modalMaxWidth ) ? self.modalMaxWidth : windowWidth*.8,
-				modalHeight = ( windowHeight*.8 > self.modalMaxHeight ) ? self.modalMaxHeight : windowHeight*.8;
-
-			var HeaderBgScaleY = modalHeight/eventHeight,
-				BodyBgScaleX = (modalWidth - eventWidth);
-
-
-			setTimeout(function(){
-				self.modal.setAttribute('style', 'top:'+(windowHeight/2 - modalHeight/2)+'px;left:'+(windowWidth/2 - modalWidth/2)+'px;height:'+modalHeight+'px;width:'+modalWidth+'px;transform: translateY(0) translateX(0)');
-				//change modal modalBodyBg height/width
-				self.modalBodyBg.style.height = modalHeight+'px';self.modalBodyBg.style.transform = 'scaleY(1) scaleX('+BodyBgScaleX+')';self.modalBodyBg.style.width = '1px';
-				//set modalHeader width
-				self.modalHeader.setAttribute('style', 'width:'+eventWidth+'px');
-				//set modalBody left margin
-				self.modalBody.setAttribute('style', 'margin-left:'+eventWidth+'px');
-				//change modal modalHeaderBg height/width and scale it
-				self.modalHeaderBg.setAttribute('style', 'height: '+eventHeight+'px;width:'+eventWidth+'px; transform:scaleY('+HeaderBgScaleY+');');
-			}, 10);
-
-			setTimeout(function(){
-				Util.removeClass(self.modal, 'cd-schedule-modal--no-transition');
-				self.animating = false;	
-			}, 20);
-
-		}
+        //if browser do not support transitions -> no need to wait for the end of it
+        this.animationFallback();
     };
-    ScheduleTemplate.prototype.addCourseInfo = function(content) {
+
+    ScheduleTemplate.prototype.closeModal = function () {
         var self = this;
-        info = content.split('+')
-        switch(info[3]){
-            case '1':
+        var mq = self.mq();
+
+        var item = self.element.getElementsByClassName('cd-schedule__event--selected')[0],
+            target = item.getElementsByTagName('a')[0];
+
+        this.animating = true;
+
+        if (mq == 'mobile') {
+            Util.removeClass(this.modal, 'cd-schedule-modal--open');
+            self.modal.addEventListener('transitionend', function cb() {
+                Util.removeClass(self.modal, 'cd-schedule-modal--content-loaded');
+                Util.removeClass(item, 'cd-schedule__event--selected');
+                self.animating = false;
+                self.modal.removeEventListener('transitionend', cb);
+            });
+        } else {
+            var eventPosition = target.getBoundingClientRect(),
+                eventTop = eventPosition.top,
+                eventLeft = eventPosition.left,
+                eventHeight = target.offsetHeight,
+                eventWidth = target.offsetWidth;
+
+            var modalStyle = window.getComputedStyle(self.modal),
+                modalTop = Number(modalStyle.getPropertyValue('top').replace('px', '')),
+                modalLeft = Number(modalStyle.getPropertyValue('left').replace('px', ''));
+
+            var modalTranslateX = eventLeft - modalLeft,
+                modalTranslateY = eventTop - modalTop;
+
+            Util.removeClass(this.modal, 'cd-schedule-modal--open cd-schedule-modal--animation-completed');
+
+            //change modal width/height and translate it
+            self.modal.style.width = eventWidth + 'px'; self.modal.style.height = eventHeight + 'px'; self.modal.style.transform = 'translateX(' + modalTranslateX + 'px) translateY(' + modalTranslateY + 'px)';
+            //scale down modalBodyBg element
+            self.modalBodyBg.style.transform = 'scaleX(0) scaleY(1)';
+            //scale down modalHeaderBg element
+            // self.modalHeaderBg.setAttribute('style', 'transform: scaleY(1)');
+            self.modalHeaderBg.style.transform = 'scaleY(1)';
+
+            self.modalHeaderBg.addEventListener('transitionend', function cb() {
+                //wait for the  end of the modalHeaderBg transformation and reset modal style
+                Util.addClass(self.modal, 'cd-schedule-modal--no-transition');
+                setTimeout(function () {
+                    self.modal.removeAttribute('style');
+                    self.modalBody.removeAttribute('style');
+                    self.modalHeader.removeAttribute('style');
+                    self.modalHeaderBg.removeAttribute('style');
+                    self.modalBodyBg.removeAttribute('style');
+                }, 10);
+                setTimeout(function () {
+                    Util.removeClass(self.modal, 'cd-schedule-modal--no-transition');
+                }, 20);
+                self.animating = false;
+                Util.removeClass(self.modal, 'cd-schedule-modal--content-loaded');
+                Util.removeClass(item, 'cd-schedule__event--selected');
+                self.modalHeaderBg.removeEventListener('transitionend', cb);
+            });
+        }
+
+        //if browser do not support transitions -> no need to wait for the end of it
+        this.animationFallback();
+    };
+
+    ScheduleTemplate.prototype.checkEventModal = function (modalOpen) {
+        // this function is used on resize to reset events/modal style
+        this.animating = true;
+        var self = this;
+        var mq = this.mq();
+        if (mq == 'mobile') {
+            //reset modal style on mobile
+            self.modal.removeAttribute('style');
+            self.modalBody.removeAttribute('style');
+            self.modalHeader.removeAttribute('style');
+            self.modalHeaderBg.removeAttribute('style');
+            self.modalBodyBg.removeAttribute('style');
+            Util.removeClass(self.modal, 'cd-schedule-modal--no-transition');
+            self.animating = false;
+        } else if (mq == 'desktop' && modalOpen) {
+            Util.addClass(self.modal, 'cd-schedule-modal--no-transition cd-schedule-modal--animation-completed');
+            var item = self.element.getElementsByClassName('cd-schedule__event--selected')[0],
+                target = item.getElementsByTagName('a')[0];
+
+            var eventPosition = target.getBoundingClientRect(),
+                eventTop = eventPosition.top,
+                eventLeft = eventPosition.left,
+                eventHeight = target.offsetHeight,
+                eventWidth = target.offsetWidth;
+
+            var windowWidth = window.innerWidth,
+                windowHeight = window.innerHeight;
+
+            var modalWidth = (windowWidth * .8 > self.modalMaxWidth) ? self.modalMaxWidth : windowWidth * .8,
+                modalHeight = (windowHeight * .8 > self.modalMaxHeight) ? self.modalMaxHeight : windowHeight * .8;
+
+            var HeaderBgScaleY = modalHeight / eventHeight,
+                BodyBgScaleX = (modalWidth - eventWidth);
+
+
+            setTimeout(function () {
+                self.modal.setAttribute('style', 'top:' + (windowHeight / 2 - modalHeight / 2) + 'px;left:' + (windowWidth / 2 - modalWidth / 2) + 'px;height:' + modalHeight + 'px;width:' + modalWidth + 'px;transform: translateY(0) translateX(0)');
+                //change modal modalBodyBg height/width
+                self.modalBodyBg.style.height = modalHeight + 'px'; self.modalBodyBg.style.transform = 'scaleY(1) scaleX(' + BodyBgScaleX + ')'; self.modalBodyBg.style.width = '1px';
+                //set modalHeader width
+                self.modalHeader.setAttribute('style', 'width:' + eventWidth + 'px');
+                //set modalBody left margin
+                self.modalBody.setAttribute('style', 'margin-left:' + eventWidth + 'px');
+                //change modal modalHeaderBg height/width and scale it
+                self.modalHeaderBg.setAttribute('style', 'height: ' + eventHeight + 'px;width:' + eventWidth + 'px; transform:scaleY(' + HeaderBgScaleY + ');');
+            }, 10);
+
+            setTimeout(function () {
+                Util.removeClass(self.modal, 'cd-schedule-modal--no-transition');
+                self.animating = false;
+            }, 20);
+
+        }
+    };
+    ScheduleTemplate.prototype.addCourseInfo = function (content) {
+        var self = this;
+        let course = JSON.parse(content)
+        switch (course.timeinfo.flag) {
+            case 1:
                 flag = '单周';
                 break;
-            case '2':
+            case 2:
                 flag = '双周'
                 break;
             default:
@@ -630,96 +1056,262 @@ axios.get('https://api.limxw.com/schedule/json/18011317')
         CourseInfo = `
         <div>
             <h1>详细信息</h1>
-            <h2>任课老师：${info[0]}</h2>
-            <h2>上课教室：${info[4]}</h2>
-            <h2>开始结束周：${info[1]} - ${info[2]}</h2>
+            <h2>任课老师：${course.teacher}</h2>
+            <h2>上课教室：${course.location}</h2>
+            <h2>开始结束周：${course.timeinfo.start} - ${course.timeinfo.end}</h2>
             <h2>周次：${flag}</h2>
         </div>
         `
         self.modal.getElementsByClassName('cd-schedule-modal__event-info')[0].innerHTML = CourseInfo;
         Util.addClass(self.modal, 'cd-schedule-modal--content-loaded');
     }
-    /*
-	ScheduleTemplate.prototype.loadEventContent = function(content) {
-		// load the content of an event when user selects it
-		var self = this;
 
-		httpRequest = new XMLHttpRequest();
-		httpRequest.onreadystatechange = function() {
-			if (httpRequest.readyState === XMLHttpRequest.DONE) {
-	      if (httpRequest.status === 200) {
-	      	self.modal.getElementsByClassName('cd-schedule-modal__event-info')[0].innerHTML = self.getEventContent(httpRequest.responseText); 
-	      	Util.addClass(self.modal, 'cd-schedule-modal--content-loaded');
-	      }
-	    }
-		};
-		httpRequest.open('GET', content+'.html');
-    httpRequest.send();
+    ScheduleTemplate.prototype.getEventContent = function (string) {
+        // reset the loaded event content so that it can be inserted in the modal
+        var div = document.createElement('div');
+        div.innerHTML = string.trim();
+        return div.getElementsByClassName('cd-schedule-modal__event-info')[0].innerHTML;
     };
-    */
 
-	ScheduleTemplate.prototype.getEventContent = function(string) {
-		// reset the loaded event content so that it can be inserted in the modal
-		var div = document.createElement('div');
-		div.innerHTML = string.trim();
-		return div.getElementsByClassName('cd-schedule-modal__event-info')[0].innerHTML;
-	};
+    ScheduleTemplate.prototype.animationFallback = function () {
+        if (!this.supportAnimation) { // fallback for browsers not supporting transitions
+            var event = new CustomEvent('transitionend');
+            self.modal.dispatchEvent(event);
+            self.modalHeaderBg.dispatchEvent(event);
+        }
+    };
 
-	ScheduleTemplate.prototype.animationFallback = function() {
-		if( !this.supportAnimation ) { // fallback for browsers not supporting transitions
-			var event = new CustomEvent('transitionend');
-			self.modal.dispatchEvent(event);
-			self.modalHeaderBg.dispatchEvent(event);
-		}
-	};
+    ScheduleTemplate.prototype.mq = function () {
+        //get MQ value ('desktop' or 'mobile') 
+        var self = this;
+        return window.getComputedStyle(this.element, '::before').getPropertyValue('content').replace(/'|"/g, "");
+    };
 
-	ScheduleTemplate.prototype.mq = function(){
-		//get MQ value ('desktop' or 'mobile') 
-		var self = this;
-		return window.getComputedStyle(this.element, '::before').getPropertyValue('content').replace(/'|"/g, "");
-	};
+    function getScheduleTimestamp(time) {
+        //accepts hh:mm format - convert hh:mm to timestamp
+        time = time.replace(/ /g, '');
+        var timeArray = time.split(':');
+        var timeStamp = parseInt(timeArray[0]) * 60 + parseInt(timeArray[1]);
+        return timeStamp;
+    };
 
-	function getScheduleTimestamp(time) {
-		//accepts hh:mm format - convert hh:mm to timestamp
-		time = time.replace(/ /g,'');
-		var timeArray = time.split(':');
-		var timeStamp = parseInt(timeArray[0])*60 + parseInt(timeArray[1]);
-		return timeStamp;
-	};
-    function renderSchedule(){
-        var scheduleTemplate = document.getElementsByClassName('js-cd-schedule'),	
-            scheduleTemplateArray = [],
-            resizing = false;
-        if( scheduleTemplate.length > 0 ) { // init ScheduleTemplate objects
-            for( var i = 0; i < scheduleTemplate.length; i++) {
-                (function(i){
-                    scheduleTemplateArray.push(new ScheduleTemplate(scheduleTemplate[i]));
-                })(i);
+    function renderSchedule() {
+        for (var i = 0; i < scheduleTemplateArray.length; i++) {
+            scheduleTemplateArray[i].initSchedule();
+            scheduleTemplateArray[i].placeEvents();
+        }
+    }
+
+    // 导出渲染课程表函数
+    window.renderSchedule = renderSchedule
+
+    var scheduleTemplate = document.getElementsByClassName('js-cd-schedule'),
+        scheduleTemplateArray = [],
+        resizing = false;
+    if (scheduleTemplate.length > 0) { // init ScheduleTemplate objects
+        for (var i = 0; i < scheduleTemplate.length; i++) {
+            (function (i) {
+                scheduleTemplateArray.push(new ScheduleTemplate(scheduleTemplate[i]));
+            })(i);
+        }
+
+        window.addEventListener('resize', function (event) {
+            // on resize - update events position and modal position (if open)
+            if (!resizing) {
+                resizing = true;
+                (!window.requestAnimationFrame) ? setTimeout(checkResize, 250) : window.requestAnimationFrame(checkResize);
             }
+        });
 
-            window.addEventListener('resize', function(event) { 
-                // on resize - update events position and modal position (if open)
-                if( !resizing ) {
-                    resizing = true;
-                    (!window.requestAnimationFrame) ? setTimeout(checkResize, 250) : window.requestAnimationFrame(checkResize);
+        window.addEventListener('keyup', function (event) {
+            // close event modal when pressing escape key
+            if (event.keyCode && event.keyCode == 27 || event.key && event.key.toLowerCase() == 'escape') {
+                for (var i = 0; i < scheduleTemplateArray.length; i++) {
+                    scheduleTemplateArray[i].closeModal();
                 }
-            });
+            }
+        });
 
-            window.addEventListener('keyup', function(event){
-                // close event modal when pressing escape key
-                if( event.keyCode && event.keyCode == 27 || event.key && event.key.toLowerCase() == 'escape' ) {
-                    for(var i = 0; i < scheduleTemplateArray.length; i++) {
-                        scheduleTemplateArray[i].closeModal();
+        function checkResize() {
+            for (var i = 0; i < scheduleTemplateArray.length; i++) {
+                scheduleTemplateArray[i].scheduleReset();
+            }
+            resizing = false;
+        };
+    }
+
+}(window));
+let search = document.getElementById("search")
+let form = document.getElementById("search-form")
+
+HTMLFormElement.prototype.serialize = function () {
+    var form = this;
+    // 表单数据
+    var arrFormData = [], objFormData = {};
+
+    [].slice.call(form.elements).forEach(function (ele) {
+        // 元素类型和状态
+        var type = ele.type, disabled = ele.disabled;
+
+        // 元素的键值
+        var name = ele.name, value = encodeURIComponent(ele.value || '');
+
+        // name参数必须，元素非disabled态，一些类型忽略
+        if (!name || disabled || !type || (/^reset|submit|image$/i.test(type)) || (/^checkbox|radio$/i.test(type) && !ele.checked)) {
+            return;
+        }
+
+        type = type.toLowerCase();
+
+        if (type !== 'select-multiple') {
+            if (objFormData[name]) {
+                objFormData[name].push(value);
+            } else {
+                objFormData[name] = [value];
+            }
+        } else {
+            [].slice.call(ele.querySelectorAll('option')).forEach(function (option) {
+                var optionValue = encodeURIComponent(option.value || 'on');
+                if (option.selected) {
+                    if (objFormData[name]) {
+                        objFormData[name].push(optionValue);
+                    } else {
+                        objFormData[name] = [optionValue];
                     }
                 }
             });
+        }
+    });
 
-            function checkResize(){
-                for(var i = 0; i < scheduleTemplateArray.length; i++) {
-                    scheduleTemplateArray[i].scheduleReset();
-                }
-                resizing = false;
-            };
+    for (var key in objFormData) {
+        arrFormData.push(key + '=' + objFormData[key].join('第'));
+    }
+
+    return arrFormData.join('&');
+};
+
+function createlist(ele) {
+    let courses_list = document.getElementById("courses_list")
+    if (courses_list == null) {
+        let html = `
+                <table class="table table--expanded@sm js-table width-100%" aria-label="Table Example">
+                    <thead class="table__header table__header--sticky">
+                      <tr class="table__row">
+                        <th class="table__cell text-left" scope="col">状态</th>
+                        <th class="table__cell text-left" scope="col">课程名</th>
+                        <th class="table__cell text-left" scope="col">任课教师</th>
+                        <th class="table__cell text-left" scope="col">上课地点</th>
+                        <th class="table__cell text-left" scope="col">上课时间</th>
+                        <th class="table__cell text-left" scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    
+                    <tbody class="table__body" id="courses_list">
+
+                    </tbody>
+                </table>`
+        ele.insertAdjacentHTML('beforeend', html)
     }
 }
-//}());
+
+function empty() {
+    let courses_list = document.getElementById("courses_list")
+    if (courses_list != null) {
+        courses_list.innerHTML = ""
+    }
+}
+
+function insert2list(ele, data) {
+    let coursestr = JSON.stringify(data)
+    let html = `
+    <tr class="table__row">
+        <td class="table__cell" role="cell">${data.status}</td>  
+        <td class="table__cell" role="cell">${data.title}</td>        
+        <td class="table__cell" role="cell">${data.teacher}</td>        
+        <td class="table__cell" role="cell">${data.location}</td>
+        <td class="table__cell" role="cell">${week}</td>              
+        <td class="table__cell" role="cell"> 
+            <button class="btn btn--subtle add-course" onclick="select(this)" data-content='${coursestr}'>选择</button>
+        </td>
+    </tr>`
+    ele.insertAdjacentHTML('beforeend', html)
+}
+
+function select(obj) {
+    let str = obj.getAttribute('data-content')
+    let json = JSON.parse(str)
+    let html = create(json)
+    findplace(json.timeinfo.weekday, html)
+    renderSchedule()
+}
+
+search.addEventListener('click', function (e) {
+    e.preventDefault();
+    empty()
+    query = form.serialize()
+    search_div = document.getElementById("search_div")
+    axios.get('https://api.limxw.com/courses/query?' + query)
+        .then(function (resp) {
+            r = resp
+            createlist(search_div)
+            renderTable()
+            courses_list = document.getElementById("courses_list")
+            resp.data.forEach(course => {
+                insert2list(courses_list, course)
+            })
+        })
+        .catch(function (err) {
+            console.log(err)
+        })
+});
+// File#: _1_table
+// Usage: codyhouse.co/license
+//(function() {
+tableExpandedLayoutClass = 'table--expanded';
+function initTable(table) {
+    checkTableLayour(table); // switch from a collapsed to an expanded layout
+    Util.addClass(table, 'table--loaded'); // show table
+
+    // custom event emitted when window is resized
+    table.addEventListener('update-table', function (event) {
+        checkTableLayour(table);
+    });
+};
+
+function checkTableLayour(table) {
+    var layout = getComputedStyle(table, ':before').getPropertyValue('content').replace(/\'|"/g, '');
+    Util.toggleClass(table, tableExpandedLayoutClass, layout != 'collapsed');
+};
+
+function renderTable() {
+
+    var tables = document.getElementsByClassName('js-table')
+    if (tables.length > 0) {
+        var j = 0;
+        for (var i = 0; i < tables.length; i++) {
+            var beforeContent = getComputedStyle(tables[i], ':before').getPropertyValue('content');
+            if (beforeContent && beforeContent != '' && beforeContent != 'none') {
+                (function (i) { initTable(tables[i]); })(i);
+                j = j + 1;
+            } else {
+                Util.addClass(tables[i], 'table--loaded');
+            }
+        }
+
+        if (j > 0) {
+            var resizingId = false,
+                customEvent = new CustomEvent('update-table');
+            window.addEventListener('resize', function (event) {
+                clearTimeout(resizingId);
+                resizingId = setTimeout(doneResizing, 300);
+            });
+
+            function doneResizing() {
+                for (var i = 0; i < tables.length; i++) {
+                    (function (i) { tables[i].dispatchEvent(customEvent) })(i);
+                };
+            };
+        }
+    }
+}
+  //}());
