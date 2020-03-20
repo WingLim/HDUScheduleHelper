@@ -15,14 +15,36 @@
     <noscript>
         <link rel="stylesheet" href="assets/css/style-fallback.css">
     </noscript>
-    <title>HDU排课助手</title>
+    <title>HDU课程助手</title>
 </head>
 
 <body>
+    <header class="f-header js-f-header " >
+        <div class="f-header__mobile-content container max-width-lg">
+          <a href="#0" class="f-header__logo">
+            <h1>HDU课程助手</h1>
+          </a>
+      
+          <button class="reset anim-menu-btn js-anim-menu-btn f-header__nav-control js-tab-focus" aria-label="Toggle menu">
+            <i class="anim-menu-btn__icon anim-menu-btn__icon--close" aria-hidden="true"></i>
+          </button>
+        </div>
+      
+        <div class="f-header__nav" role="navigation">
+          <div class="f-header__nav-grid justify-between@md container max-width-lg">
+            <div class="f-header__nav-logo-wrapper flex-grow flex-basis-0">
+                <h2><a href="#0" class="text-decoration-none">HDU课程助手</a></h2>
+            </div>
+            <ul class="f-header__list flex-grow flex-basis-0 justify-end@md">
+                <li class="f-header__item"><a href="#0" class="f-header__link">获取课表</a></li>
+                <li class="f-header__item">
+                  <a href="#0" class="f-header__btn btn btn--primary" aria-controls="searchCourse">搜索课程</a>
+                </li>
+            </ul>
+          </div>
+        </div>
+      </header>
     <header class="cd-main-header text-center flex flex-column flex-center">
-        <p class="margin-top-md margin-bottom-xl">👈 <a class="cd-article-link"
-                href="https://codyhouse.co/gem/schedule-template" aria-controls="searchCourse">搜索课程</a>
-        </p>
 
         <div class="modal js-modal" id="searchCourse" data-animation="on">
             <div id="search_div" class="modal__content padding-md max-width-md scrollbar" role="alertdialog" tabindex="-1"
@@ -32,7 +54,14 @@
                     <div class="flex flex-column flex-row@xs gap-xxxs margin-bottom-sm">
                         <input name="title" aria-label="Email" class="form-control flex-grow" type="text"
                             placeholder="课程名">
-                        <button class="btn btn--primary" id="search">搜索</button>
+                            <button class="btn btn--primary btn--preserve-width" id="search">
+                                <span class="btn__content-a">搜索</span>
+                              
+                                <span class="btn__content-b">
+                                  <svg class="icon icon--is-spinning" aria-hidden="true" viewBox="0 0 16 16"><title>Loading</title><g stroke-width="1" fill="currentColor" stroke="currentColor"><path d="M.5,8a7.5,7.5,0,1,1,1.91,5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
+                                </span>
+                              </button>
+                        
                     </div>
                     <!--
                     <div class="margin-bottom-sm flex flex-row">
@@ -121,8 +150,6 @@
                 </svg>
             </button>
         </div>
-
-        <h1 class="text-xl">课程表</h1>
     </header>
 
     <div class="cd-schedule cd-schedule--loading margin-top-lg margin-bottom-lg js-cd-schedule">
