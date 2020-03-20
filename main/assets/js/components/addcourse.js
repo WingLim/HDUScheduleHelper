@@ -3,29 +3,22 @@ function insert (id, html) {
     ul.insertAdjacentHTML('beforeend', html)
 }
 
-function findplace(weekday, ele){
+function findplace(weekday){
     switch (weekday) {
         case '周一':
-            insert('1', ele)
-            break;
+            return '1';
         case '周二':
-            insert('2', ele)
-            break;
+            return '2'
         case '周三':
-            insert('3', ele)
-            break;
+            return '3'
         case '周四':
-            insert('4', ele)
-            break;
+            return '4'
         case '周五':
-            insert('5', ele)
-            break;
+            return '5'
         case '周六':
-            insert('6', ele)
-            break;
+            return '6'
         case '周日':
-            insert('7', ele)
-            break;
+            return '7'
     }
 }
 function create (course) {
@@ -47,7 +40,8 @@ axios.get('https://api.limxw.com/schedule/json/18011317')
         r = resp
         resp.data.forEach(course => {
             let ele = create(course)
-            findplace(course.timeinfo.weekday, ele)
+            let place = findplace(course.timeinfo.weekday)
+            insert(place, ele)
         });
         renderSchedule()
     })
