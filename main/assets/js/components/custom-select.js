@@ -230,6 +230,18 @@
     function checkCustomSelectClick(select, target) { // close select when clicking outside it
       if( !select.element.contains(target) ) toggleCustomSelect(select, 'false');
     };
+
+    function renderSelect() {
+        let customSelect = document.getElementsByClassName('js-select')
+        if( customSelect.length > 0 ) {
+            let selectArray = [];
+            for( var i = 0; i < customSelect.length; i++) {
+                (function(i){selectArray.push(new CustomSelect(customSelect[i]));})(i);
+            }
+        }
+    };
+
+    window.renderSelect = renderSelect
     
     //initialize the CustomSelect objects
     var customSelect = document.getElementsByClassName('js-select');
