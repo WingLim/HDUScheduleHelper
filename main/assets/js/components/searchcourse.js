@@ -86,7 +86,7 @@ function insert2list(ele, data) {
         <td class="table__cell" role="cell">${data.title}</td>        
         <td class="table__cell" role="cell">${data.teacher}</td>        
         <td class="table__cell" role="cell">${data.location}</td>
-        <td class="table__cell" role="cell">${week}</td>              
+        <td class="table__cell" role="cell">${data.time}</td>              
         <td class="table__cell" role="cell"> 
             <button class="btn btn--subtle add-course" onclick="select(this)" data-content='${coursestr}'>选择</button>
         </td>
@@ -94,12 +94,28 @@ function insert2list(ele, data) {
     ele.insertAdjacentHTML('beforeend', html)
 }
 
+function is_course_exist(start, place) {
+    let column = document.getElementById(place)
+    let a_list = column.getElementsByTagName('a')
+    for(let i = 0; i < a_list.length; i++) {
+        if (a_list[i].getAttribute('data-start') == start) {
+            return true
+        }
+    }
+    return false
+}
+
 function select(obj) {
     let str = obj.getAttribute('data-content')
     let json = JSON.parse(str)
     let html = create(json)
-    findplace(json.timeinfo.weekday, html)
-    renderSchedule()
+    let place = findplace(json.timeinfo.weekday)
+    if (is_course_exist(json.timeinfo.start, place)) {
+        alert('课程冲突')
+    } else {
+        insert(place, html)
+        renderSchedule()
+    }
 }
 
 search.addEventListener('click', function (e) {
