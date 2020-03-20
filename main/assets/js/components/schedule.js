@@ -1,4 +1,4 @@
-(function (window) {
+(function() {
     // Schedule Template - by CodyHouse.co
     function ScheduleTemplate(element) {
         this.element = element;
@@ -388,4 +388,4 @@
         };
     }
 
-}(window));
+}());
