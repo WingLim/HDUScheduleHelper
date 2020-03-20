@@ -598,6 +598,240 @@ axios.get('https://api.limxw.com/schedule/json/18011317')
       });
     }
   }());
+// File#: _1_drawer
+// Usage: codyhouse.co/license
+(function() {
+    var Drawer = function(element) {
+      this.element = element;
+      this.content = document.getElementsByClassName('js-drawer__body')[0];
+      this.triggers = document.querySelectorAll('[aria-controls="'+this.element.getAttribute('id')+'"]');
+      this.firstFocusable = null;
+      this.lastFocusable = null;
+      this.selectedTrigger = null;
+      this.isModal = Util.hasClass(this.element, 'js-drawer--modal');
+      this.showClass = "drawer--is-visible";
+      this.initDrawer();
+    };
+  
+    Drawer.prototype.initDrawer = function() {
+      var self = this;
+      //open drawer when clicking on trigger buttons
+      if ( this.triggers ) {
+        for(var i = 0; i < this.triggers.length; i++) {
+          this.triggers[i].addEventListener('click', function(event) {
+            event.preventDefault();
+            if(Util.hasClass(self.element, self.showClass)) return;
+            self.selectedTrigger = event.target;
+            self.showDrawer();
+            self.initDrawerEvents();
+          });
+        }
+      }
+    };
+  
+    Drawer.prototype.showDrawer = function() {
+      var self = this;
+      this.content.scrollTop = 0;
+      Util.addClass(this.element, this.showClass);
+      this.getFocusableElements();
+      Util.moveFocus(this.element);
+      // wait for the end of transitions before moving focus
+      this.element.addEventListener("transitionend", function cb(event) {
+        Util.moveFocus(self.element);
+        self.element.removeEventListener("transitionend", cb);
+      });
+      this.emitDrawerEvents('drawerIsOpen');
+    };
+  
+    Drawer.prototype.closeDrawer = function() {
+      Util.removeClass(this.element, this.showClass);
+      this.firstFocusable = null;
+      this.lastFocusable = null;
+      if(this.selectedTrigger) this.selectedTrigger.focus();
+      //remove listeners
+      this.cancelDrawerEvents();
+      this.emitDrawerEvents('drawerIsClose');
+    };
+  
+    Drawer.prototype.initDrawerEvents = function() {
+      //add event listeners
+      this.element.addEventListener('keydown', this);
+      this.element.addEventListener('click', this);
+    };
+  
+    Drawer.prototype.cancelDrawerEvents = function() {
+      //remove event listeners
+      this.element.removeEventListener('keydown', this);
+      this.element.removeEventListener('click', this);
+    };
+  
+    Drawer.prototype.handleEvent = function (event) {
+      switch(event.type) {
+        case 'click': {
+          this.initClick(event);
+        }
+        case 'keydown': {
+          this.initKeyDown(event);
+        }
+      }
+    };
+  
+    Drawer.prototype.initKeyDown = function(event) {
+      if( event.keyCode && event.keyCode == 27 || event.key && event.key == 'Escape' ) {
+        //close drawer window on esc
+        this.closeDrawer();
+      } else if( this.isModal && (event.keyCode && event.keyCode == 9 || event.key && event.key == 'Tab' )) {
+        //trap focus inside drawer
+        this.trapFocus(event);
+      }
+    };
+  
+    Drawer.prototype.initClick = function(event) {
+      //close drawer when clicking on close button or drawer bg layer 
+      if( !event.target.closest('.js-drawer__close') && !Util.hasClass(event.target, 'js-drawer') ) return;
+      event.preventDefault();
+      this.closeDrawer();
+    };
+  
+    Drawer.prototype.trapFocus = function(event) {
+      if( this.firstFocusable == document.activeElement && event.shiftKey) {
+        //on Shift+Tab -> focus last focusable element when focus moves out of drawer
+        event.preventDefault();
+        this.lastFocusable.focus();
+      }
+      if( this.lastFocusable == document.activeElement && !event.shiftKey) {
+        //on Tab -> focus first focusable element when focus moves out of drawer
+        event.preventDefault();
+        this.firstFocusable.focus();
+      }
+    }
+  
+    Drawer.prototype.getFocusableElements = function() {
+      //get all focusable elements inside the drawer
+      var allFocusable = this.element.querySelectorAll('[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex]:not([tabindex="-1"]), [contenteditable], audio[controls], video[controls], summary');
+      this.getFirstVisible(allFocusable);
+      this.getLastVisible(allFocusable);
+    };
+  
+    Drawer.prototype.getFirstVisible = function(elements) {
+      //get first visible focusable element inside the drawer
+      for(var i = 0; i < elements.length; i++) {
+        if( elements[i].offsetWidth || elements[i].offsetHeight || elements[i].getClientRects().length ) {
+          this.firstFocusable = elements[i];
+          return true;
+        }
+      }
+    };
+  
+    Drawer.prototype.getLastVisible = function(elements) {
+      //get last visible focusable element inside the drawer
+      for(var i = elements.length - 1; i >= 0; i--) {
+        if( elements[i].offsetWidth || elements[i].offsetHeight || elements[i].getClientRects().length ) {
+          this.lastFocusable = elements[i];
+          return true;
+        }
+      }
+    };
+  
+    Drawer.prototype.emitDrawerEvents = function(eventName) {
+      var event = new CustomEvent(eventName, {detail: this.selectedTrigger});
+      this.element.dispatchEvent(event);
+    };
+  
+    //initialize the Drawer objects
+    var drawer = document.getElementsByClassName('js-drawer');
+    if( drawer.length > 0 ) {
+      for( var i = 0; i < drawer.length; i++) {
+        (function(i){new Drawer(drawer[i]);})(i);
+      }
+    }
+  }());
+// File#: _1_flash-message
+// Usage: codyhouse.co/license
+(function() {
+    var FlashMessage = function(element) {
+      this.element = element;
+      this.showClass = "flash-message--is-visible";
+      this.messageDuration = parseInt(this.element.getAttribute('data-duration')) || 3000;
+      this.triggers = document.querySelectorAll('[aria-controls="'+this.element.getAttribute('id')+'"]');
+      this.temeoutId = null;
+      this.isVisible = false;
+      this.initFlashMessage();
+    };
+  
+    FlashMessage.prototype.initFlashMessage = function() {
+      var self = this;
+      //open modal when clicking on trigger buttons
+      if ( self.triggers ) {
+        for(var i = 0; i < self.triggers.length; i++) {
+          self.triggers[i].addEventListener('click', function(event) {
+            event.preventDefault();
+            self.showFlashMessage();
+          });
+        }
+      }
+      //listen to the event that triggers the opening of a flash message
+      self.element.addEventListener('showFlashMessage', function(){
+        self.showFlashMessage();
+      });
+    };
+  
+    FlashMessage.prototype.showFlashMessage = function() {
+      var self = this;
+      Util.addClass(self.element, self.showClass);
+      self.isVisible = true;
+      //hide other flash messages
+      self.hideOtherFlashMessages();
+      if( self.messageDuration > 0 ) {
+        //hide the message after an interveal (this.messageDuration)
+        self.temeoutId = setTimeout(function(){
+          self.hideFlashMessage();
+        }, self.messageDuration);
+      }
+    };
+  
+    FlashMessage.prototype.hideFlashMessage = function() {
+      Util.removeClass(this.element, this.showClass);
+      this.isVisible = false;
+      //reset timeout
+      clearTimeout(this.temeoutId);
+      this.temeoutId = null;
+    };
+  
+    FlashMessage.prototype.hideOtherFlashMessages = function() {
+      var event = new CustomEvent('flashMessageShown', { detail: this.element });
+      window.dispatchEvent(event);
+    };
+  
+    FlashMessage.prototype.checkFlashMessage = function(message) {
+      if( !this.isVisible ) return; 
+      if( this.element == message) return;
+      this.hideFlashMessage();
+    };
+
+    function showHint(element) {
+        var event = new CustomEvent('showFlashMessage');
+        element.dispatchEvent(event);
+      };
+
+    window.showHint = showHint
+  
+    //initialize the FlashMessage objects
+    var flashMessages = document.getElementsByClassName('js-flash-message');
+    if( flashMessages.length > 0 ) {
+      var flashMessagesArray = [];
+      for( var i = 0; i < flashMessages.length; i++) {
+        (function(i){flashMessagesArray.push(new FlashMessage(flashMessages[i]));})(i);
+      }
+  
+      //listen for a flash message to be shown -> close the others
+      window.addEventListener('flashMessageShown', function(event){
+        flashMessagesArray.forEach(function(element){
+          element.checkFlashMessage(event.detail);
+        });
+      });
+    }
+  }());
 // File#: _2_flexi-header
 // Usage: codyhouse.co/license
 (function() {
@@ -821,7 +1055,7 @@ axios.get('https://api.limxw.com/schedule/json/18011317')
       });
     }
   }());
-(function (window) {
+(function() {
     // Schedule Template - by CodyHouse.co
     function ScheduleTemplate(element) {
         this.element = element;
@@ -1211,7 +1445,7 @@ axios.get('https://api.limxw.com/schedule/json/18011317')
         };
     }
 
-}(window));
+}());
 let search = document.getElementById("search")
 let form = document.getElementById("search-form")
 
@@ -1268,12 +1502,11 @@ function createlist(ele) {
                 <table class="table table--expanded@sm js-table width-100%" aria-label="Table Example">
                     <thead class="table__header table__header--sticky">
                       <tr class="table__row">
-                        <th class="table__cell text-left" scope="col">状态</th>
-                        <th class="table__cell text-left" scope="col">课程名</th>
-                        <th class="table__cell text-left" scope="col">任课教师</th>
-                        <th class="table__cell text-left" scope="col">上课地点</th>
-                        <th class="table__cell text-left" scope="col">上课时间</th>
-                        <th class="table__cell text-left" scope="col">Action</th>
+                        <th class="table__cell text-left" scope="col">课程</th>
+                        <th class="table__cell text-left" scope="col">教师</th>
+                        <th class="table__cell text-left" scope="col">地点</th>
+                        <th class="table__cell text-left" scope="col">时间</th>
+                        <th class="table__cell text-left" scope="col">动作</th>
                       </tr>
                     </thead>
                     
@@ -1295,8 +1528,7 @@ function empty() {
 function insert2list(ele, data) {
     let coursestr = JSON.stringify(data)
     let html = `
-    <tr class="table__row">
-        <td class="table__cell" role="cell">${data.status}</td>  
+    <tr class="table__row"> 
         <td class="table__cell" role="cell">${data.title}</td>        
         <td class="table__cell" role="cell">${data.teacher}</td>        
         <td class="table__cell" role="cell">${data.location}</td>
