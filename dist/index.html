@@ -1,28 +1,203 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script>document.getElementsByTagName("html")[0].className += " js";</script>
-  <script>
-    if('CSS' in window && CSS.supports('color', 'var(--color-var)')) {
-      document.write('<link rel="stylesheet" href="assets/css/style.css">');
-    } else {
-      document.write('<link rel="stylesheet" href="assets/css/style-fallback.css">');
-    }
-  </script>
-  <noscript>
-    <link rel="stylesheet" href="assets/css/style-fallback.css">
-  </noscript>
-  <title>Title</title>
-</head>
-<body>
-    <header class="cd-main-header text-center flex flex-column flex-center">
-        <p class="margin-top-md margin-bottom-xl">👈 <a class="cd-article-link"
-                href="https://codyhouse.co/gem/schedule-template">Article &amp; Download</a></p>
 
-        <h1 class="text-xl">课程表</h1>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>document.getElementsByTagName("html")[0].className += " js";</script>
+    <script>
+        if ('CSS' in window && CSS.supports('color', 'var(--color-var)')) {
+            document.write('<link rel="stylesheet" href="assets/css/style.css">');
+        } else {
+            document.write('<link rel="stylesheet" href="assets/css/style-fallback.css">');
+        }
+    </script>
+    <noscript>
+        <link rel="stylesheet" href="assets/css/style-fallback.css">
+    </noscript>
+    <title>HDU课程助手</title>
+</head>
+
+<body>
+    <header class="f-header js-f-header ">
+        <div class="f-header__mobile-content container max-width-lg">
+            <a href="#0" class="f-header__logo">
+                <h1>HDU课程助手</h1>
+            </a>
+
+            <button class="reset anim-menu-btn js-anim-menu-btn f-header__nav-control js-tab-focus"
+                aria-label="Toggle menu">
+                <i class="anim-menu-btn__icon anim-menu-btn__icon--close" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="f-header__nav" role="navigation">
+            <div class="f-header__nav-grid justify-between@md container max-width-lg">
+                <div class="f-header__nav-logo-wrapper flex-grow flex-basis-0">
+                    <h2><a href="#0" class="text-decoration-none">HDU课程助手</a></h2>
+                </div>
+                <ul class="f-header__list flex-grow flex-basis-0 justify-end@md">
+                    <li class="f-header__item">
+                        <a href="" class="f-header__link" aria-controls="gain-schedule">获取课表</a>
+                    </li>
+                    <li class="f-header__item">
+                        <input class="checkbox" type="checkbox" id="edit_mode" onclick="initEditMode()">
+                        <label for="edit_mode">编辑模式</label>
+                    </li>
+                    <li class="f-header__item">
+                        <a href="#0" class="f-header__btn btn btn--primary" aria-controls="search-drawer">
+                            <svg class="icon margin-right-xs" viewBox="0 0 24 24">
+                                <g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                                    stroke="currentColor" fill="none" stroke-miterlimit="10">
+                                    <line x1="22" y1="22" x2="15.656" y2="15.656"></line>
+                                    <circle cx="10" cy="10" r="8"></circle>
+                                </g>
+                            </svg>
+                            搜索课程
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </header>
+    <div class="drawer js-drawer" id="search-drawer">
+        <div class="drawer__content flex flex-column" role="alertdialog" tabindex="-1" aria-labelledby="drawerTitle2">
+            <header class="drawer__header">
+                <h4 id="drawerTitle2" class="text-truncate">搜索课程</h4>
+
+                <button class="reset drawer__close-btn js-drawer__close">
+                    <svg class="icon" viewBox="0 0 16 16">
+                        <title>关闭搜索</title>
+                        <g stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-miterlimit="10">
+                            <line x1="13.5" y1="2.5" x2="2.5" y2="13.5"></line>
+                            <line x1="2.5" y1="2.5" x2="13.5" y2="13.5"></line>
+                        </g>
+                    </svg>
+                </button>
+            </header>
+
+            <div id="search_div" class="drawer__body scrollbar padding-x-md padding-y-sm js-drawer__body">
+                <form action="" id="search-form">
+                    <div class="flex flex-column flex-row@xs gap-xxxs margin-bottom-sm">
+                        <input name="title" aria-label="Email" class="form-control flex-grow" type="text"
+                            placeholder="课程名">
+                        <button class="btn btn--primary btn--preserve-width" id="search">
+                            <span class="btn__content-a">搜索</span>
+
+                            <span class="btn__content-b">
+                                <svg class="icon icon--is-spinning" aria-hidden="true" viewBox="0 0 16 16">
+                                    <title>Loading</title>
+                                    <g stroke-width="1" fill="currentColor" stroke="currentColor">
+                                        <path d="M.5,8a7.5,7.5,0,1,1,1.91,5" fill="none" stroke="currentColor"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </g>
+                                </svg>
+                            </span>
+                        </button>
+                        <button class="btn btn--subtle btn--primary btn--preserve-width" id="advance-search">
+                            高级筛选
+                        </button>
+                    </div>
+                    <div id="advance-form"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal js-modal" id="gain-schedule" data-animation="on">
+        <div class="modal__content max-width-xxxs padding-md" role="alertdialog" tabindex="-1"
+            aria-labelledby="modalTitle1" aria-describedby="modalDescription1">
+            <button class="reset modal__close-btn modal__close-btn--sticky js-modal__close">
+                <svg class="icon" viewBox="0 0 20 20">
+                    <title>关闭</title>
+                    <polygon
+                        points="18.707 2.707 17.293 1.293 10 8.586 2.707 1.293 1.293 2.707 8.586 10 1.293 17.293 2.707 18.707 10 11.414 17.293 18.707 18.707 17.293 11.414 10 18.707 2.707" />
+                </svg>
+            </button>
+
+            <div class="text-component">
+                <h2 id="modalTitle1">获取课表</h2>
+            </div>
+            <form class="margin-top-md" id="gain-form">
+                <div class="floating-label margin-bottom-md">
+                    <label class="form-label" for="gain-xh">学号</label>
+                    <input class="form-control width-100%" type="text" name="xh" id="gain-xh" placeholder="学号">
+                </div>
+                <div class="password js-password floating-label margin-bottom-sm">
+                    <label class="form-label margin-bottom-xxxs" for="gain-pwd">密码</label>
+                    <input class="form-control width-100% password__input js-password__input" type="password" name="pwd"
+                        id="gain-pwd" placeholder="密码">
+
+                    <button class="password__btn flex flex-center js-password__btn js-tab-focus" aria-hidden="true">
+                        <span class="password__btn-label" title="Show Password">
+                            <svg class="icon block" viewBox="0 0 32 32">
+                                <g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                                    stroke="currentColor" fill="none">
+                                    <path
+                                        d="M1.409,17.182a1.936,1.936,0,0,1-.008-2.37C3.422,12.162,8.886,6,16,6c7.02,0,12.536,6.158,14.585,8.81a1.937,1.937,0,0,1,0,2.38C28.536,19.842,23.02,26,16,26S3.453,19.828,1.409,17.182Z"
+                                        stroke-miterlimit="10"></path>
+                                    <circle cx="16" cy="16" r="6" stroke-miterlimit="10"></circle>
+                                </g>
+                            </svg>
+                        </span>
+
+                        <span class="password__btn-label" title="Hide Password">
+                            <svg class="icon block" viewBox="0 0 32 32">
+                                <g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                                    stroke="currentColor" fill="none">
+                                    <path data-cap="butt"
+                                        d="M8.373,23.627a27.659,27.659,0,0,1-6.958-6.445,1.938,1.938,0,0,1-.008-2.37C3.428,12.162,8.892,6,16.006,6a14.545,14.545,0,0,1,7.626,2.368"
+                                        stroke-miterlimit="10" stroke-linecap="butt"></path>
+                                    <path
+                                        d="M27,10.923a30.256,30.256,0,0,1,3.591,3.887,1.937,1.937,0,0,1,0,2.38C28.542,19.842,23.026,26,16.006,26A12.843,12.843,0,0,1,12,25.341"
+                                        stroke-miterlimit="10"></path>
+                                    <path data-cap="butt" d="M11.764,20.243a6,6,0,0,1,8.482-8.489"
+                                        stroke-miterlimit="10" stroke-linecap="butt"></path>
+                                    <path d="M21.923,15a6.005,6.005,0,0,1-5.917,7A6.061,6.061,0,0,1,15,21.916"
+                                        stroke-miterlimit="10"></path>
+                                    <line x1="2" y1="30" x2="30" y2="2" fill="none" stroke-miterlimit="10"></line>
+                                </g>
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+                <div class="margin-bottom-sm">
+                    <fieldset>
+
+                        <div class="checkbox-list flex flex-column gap-xxxs">
+                            <div>
+                                <input class="checkbox" type="checkbox" id="gain-save" checked>
+                                <label for="checkbox1">记住我</label>
+                            </div>
+
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="margin-bottom-sm">
+                    <button class="btn btn--primary btn--md width-100%" id="gain-btn">
+                        <span class="btn__content-a">
+                            获取
+                        </span>
+
+                        <span class="btn__content-b">
+                            <svg class="icon icon--is-spinning margin-right-xxxs" aria-hidden="true"
+                                viewBox="0 0 16 16">
+                                <title>Loading</title>
+                                <g stroke-width="1" fill="currentColor" stroke="currentColor">
+                                    <path d="M.5,8a7.5,7.5,0,1,1,1.91,5" fill="none" stroke="currentColor"
+                                        stroke-linecap="round" stroke-linejoin="round"></path>
+                                </g>
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
 
     <div class="cd-schedule cd-schedule--loading margin-top-lg margin-bottom-lg js-cd-schedule">
         <div class="cd-schedule__timeline">
@@ -56,7 +231,7 @@
             </ul>
         </div> <!-- .cd-schedule__timeline -->
 
-        <div class="cd-schedule__events">
+        <div id="schedule_events" class="cd-schedule__events">
             <ul>
                 <li class="cd-schedule__group">
                     <div class="cd-schedule__top-info"><span>星期一</span></div>
@@ -134,7 +309,45 @@
 
         <div class="cd-schedule__cover-layer"></div>
     </div> <!-- .cd-schedule -->
+    <div class="notice notice--v3 js-notice" id="default-notice" style="display: none;">
+        <div class="container max-width-lg">
+          <div class="notice__banner">
+            <div class="text-component text-sm margin-bottom-md">
+              <h4>🍪 检测到课程表</h4>
+              <p>检测到本地存有课程表，是否要加载？</p>
+            </div>
+      
+            <button id="load-default" class="btn btn--primary width-100% margin-bottom-xxs js-notice__hide-control">加载它</button>
+            <button class="btn btn--subtle width-100% js-notice__hide-control">不用了</button>
+          </div>
+        </div>
+      </div>
+    <div class="color-success flash-message js-flash-message" role="status" id="select-succeed" data-duration="5000">
+        <span class="inline-flex items-center">
+            <svg aria-hidden="true" class="icon margin-right-xxxs" viewBox="0 0 16 16">
+                <g>
+                    <path
+                        d="M8,0C3.6,0,0,3.6,0,8s3.6,8,8,8s8-3.6,8-8S12.4,0,8,0z M9,12H7V7h2V12z M8,6C7.4,6,7,5.6,7,5s0.4-1,1-1 s1,0.4,1,1S8.6,6,8,6z">
+                    </path>
+                </g>
+            </svg>
+            <p>选择成功</p>
+        </span>
+    </div>
+    <div class="color-error flash-message js-flash-message" role="status" id="select-failed" data-duration="5000">
+        <span class="inline-flex items-center">
+            <svg aria-hidden="true" class="icon margin-right-xxxs" viewBox="0 0 16 16">
+                <g>
+                    <path
+                        d="M8,0C3.6,0,0,3.6,0,8s3.6,8,8,8s8-3.6,8-8S12.4,0,8,0z M9,12H7V7h2V12z M8,6C7.4,6,7,5.6,7,5s0.4-1,1-1 s1,0.4,1,1S8.6,6,8,6z">
+                    </path>
+                </g>
+            </svg>
+            <p>课程冲突</p>
+        </span>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="assets/js/scripts.js"></script>
+    <script src="assets/js/scripts.js"></script>
 </body>
+
 </html>
