@@ -295,19 +295,15 @@ function create (course) {
     range = parseInt(Math.random() * 3 +1)
     time = course.timeinfo
     info = JSON.stringify(course)
-    html = `<li class="cd-schedule__event" data-edit="true">
+    html = `<li class="cd-schedule__event">
         <a data-start="${time.start}" data-end="${time.end}" href="#0" data-content='${info}' data-event="event-${range}">
             <em class="cd-schedule__name">${course.title}</em>
         </a>
-        <button onclick="deletecourse(this)" class="reset" style="position: absolute;right: 5px;top: 5px; color: #fff; display: none">
+        <button class="delete-course reset" onclick="deleteCourse(this)" style="position: absolute;right: 5px;top: 5px; color: #fff; cursor: pointer;">
             <svg class="icon" viewBox="0 0 16 16"><title>删除课程</title><g stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"><line x1="13.5" y1="2.5" x2="2.5" y2="13.5"></line><line x1="2.5" y1="2.5" x2="13.5" y2="13.5"></line></g></svg>
         </button>
         </li>`
     return html
-}
-
-function deletecourse (obj) { 
-    obj.parentNode.parentNode.removeChild(obj.parentNode)
 }
 
 axios.get('https://api.limxw.com/schedule/json/18011317')
@@ -319,6 +315,7 @@ axios.get('https://api.limxw.com/schedule/json/18011317')
             insert(place, ele)
         });
         renderSchedule()
+        initEditMode()
     })
     .catch(function (err) {
         console.log(err)
@@ -763,6 +760,37 @@ axios.get('https://api.limxw.com/schedule/json/18011317')
       }
     }
   }());
+const schedule_events = document.getElementById('schedule_events').getElementsByTagName('li')
+const edit_mode = document.getElementById('edit_mode')
+const delete_btn = document.getElementsByClassName('delete-course')
+function setCourseClick(func) {
+    for(let i=0; i<schedule_events.length; i++) {
+        if(schedule_events[i].classList.contains('cd-schedule__event')){
+            schedule_events[i].setAttribute('onclick', func)
+        }
+    }
+}
+
+function showDeleteBtn(style) {
+    for(let i=0; i<delete_btn.length; i++) {
+        delete_btn[i].style.display = style
+    }
+}
+
+function initEditMode() {
+    if(!edit_mode.checked) {
+        setCourseClick('showDetail(this)')
+        showDeleteBtn('none')
+    } else {
+        setCourseClick('')
+        showDeleteBtn('block')
+    }
+}
+
+function deleteCourse (obj) { 
+    obj.parentNode.parentNode.removeChild(obj.parentNode)
+}
+
 // File#: _1_flash-message
 // Usage: codyhouse.co/license
 (function() {
@@ -792,6 +820,13 @@ axios.get('https://api.limxw.com/schedule/json/18011317')
         self.showFlashMessage();
       });
     };
+
+    function showHint(element) {
+        var event = new CustomEvent('showFlashMessage');
+        element.dispatchEvent(event);
+    };
+
+    window.showHint = showHint
   
     FlashMessage.prototype.showFlashMessage = function() {
       var self = this;
@@ -825,13 +860,6 @@ axios.get('https://api.limxw.com/schedule/json/18011317')
       if( this.element == message) return;
       this.hideFlashMessage();
     };
-
-    function showHint(element) {
-        var event = new CustomEvent('showFlashMessage');
-        element.dispatchEvent(event);
-      };
-
-    window.showHint = showHint
   
     //initialize the FlashMessage objects
     var flashMessages = document.getElementsByClassName('js-flash-message');
@@ -1157,15 +1185,21 @@ axios.get('https://api.limxw.com/schedule/json/18011317')
 
     ScheduleTemplate.prototype.initEvents = function () {
         var self = this;
+        
         for (var i = 0; i < this.singleEvents.length; i++) {
+            /*
+            
+            this.singleEvents[i].addEventListener('click', function (event) {
+                event.preventDefault();
+                if (!self.animating) self.openModal(this.getElementsByTagName('a')[0]);
+            });
+            */
             // open modal when user selects an event
-            if(this.singleEvents[i].getAttribute("data-edit") == "false") {
-                this.singleEvents[i].addEventListener('click', function (event) {
-                    event.preventDefault();
-                    if (!self.animating) self.openModal(this.getElementsByTagName('a')[0]);
-                });
-            }
+            this.singleEvents[i].addEventListener('showDetail', function () {
+                if (!self.animating) self.openModal(this.getElementsByTagName('a')[0]);
+            });
         }
+        
         //close modal window
         this.modalClose.addEventListener('click', function (event) {
             event.preventDefault();
@@ -1176,7 +1210,13 @@ axios.get('https://api.limxw.com/schedule/json/18011317')
             if (!self.animating) self.closeModal();
         });
     };
+    function showDetail(element) {
+        var event = new CustomEvent('showDetail');
+        console.log(element)
+        element.dispatchEvent(event);
+    };
 
+    window.showDetail = showDetail
     ScheduleTemplate.prototype.openModal = function (target) {
         var self = this;
         var mq = self.mq();
@@ -1677,35 +1717,6 @@ advance.addEventListener('click', function (e) {
     }
     
 })
-
-let schedule_events = document.getElementById('schedule-events');
-let eventsul = schedule_events.getElementsByTagName('ul')
-let events = eventsul.getElementsByTagName('li')
-
-function showbtn(event, status) {
-    let c = event.childNodes;
-    c[3].style.display = status;
-}
-
-function test2() {
-    for(let i=0; i<events.length; i++){
-        events[i].addEventListener('mouseover', showbtn(events[i], 'block'))
-        events[i].addEventListener('mouseout', showbtn(events[i], 'none'))
-    }
-}
-test2()
-
-function edit_mode() {
-    
-    for(let i=0; i<events.length; i++){
-        if (events[i].getAttribute('data-edit') == 'true'){
-            events[i].setAttribute('data-edit', 'false')
-        } else {
-            events[i].setAttribute('data-edit', 'true')
-        }
-    }
-    renderSchedule()
-}
 
 const search = document.getElementById("search")
 const searchform = document.getElementById("search-form")
