@@ -27,6 +27,13 @@
         self.showFlashMessage();
       });
     };
+
+    function showHint(element) {
+        var event = new CustomEvent('showFlashMessage');
+        element.dispatchEvent(event);
+    };
+
+    window.showHint = showHint
   
     FlashMessage.prototype.showFlashMessage = function() {
       var self = this;
@@ -60,13 +67,6 @@
       if( this.element == message) return;
       this.hideFlashMessage();
     };
-
-    function showHint(element) {
-        var event = new CustomEvent('showFlashMessage');
-        element.dispatchEvent(event);
-      };
-
-    window.showHint = showHint
   
     //initialize the FlashMessage objects
     var flashMessages = document.getElementsByClassName('js-flash-message');
