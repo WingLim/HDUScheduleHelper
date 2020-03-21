@@ -306,20 +306,6 @@ function create (course) {
     return html
 }
 
-axios.get('https://api.limxw.com/schedule/json/18011317')
-    .then(function (resp) {
-        r = resp
-        resp.data.forEach(course => {
-            let ele = create(course)
-            let place = findplace(course.timeinfo.weekday)
-            insert(place, ele)
-        });
-        renderSchedule()
-        initEditMode()
-    })
-    .catch(function (err) {
-        console.log(err)
-    });
 // File#: _1_anim-menu-btn
 // Usage: codyhouse.co/license
 (function() {
@@ -789,7 +775,7 @@ function initEditMode() {
 
 function deleteCourse (obj) { 
     obj.parentNode.parentNode.removeChild(obj.parentNode)
-}
+};
 
 // File#: _1_flash-message
 // Usage: codyhouse.co/license
@@ -964,6 +950,76 @@ function deleteCourse (obj) {
       };
     }
   }());
+const gain_schedule = document.getElementById('gain-schedule');
+const gain_form = document.getElementById('gain-form');
+const gain_btn = document.getElementById('gain-btn');
+const gain_save = document.getElementById('gain-save');
+const gain_xh = document.getElementById('gain-xh');
+const gain_pwd = document.getElementById('gain-pwd');
+
+gain_btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    let gain_query = gain_form.serialize()
+    Util.addClass(gain_btn, 'btn--state-b')
+    function removeState() {
+        Util.removeClass(gain_btn, 'btn--state-b')
+        closeGain = new CustomEvent('closeModal')
+        gain_schedule.dispatchEvent(closeGain)
+    }
+    url = 'https://api.limxw.com/schedule/json?' + gain_query
+    gainSchedule(url, gain_save.checked, removeState)
+})
+
+function gainSchedule(url, save, func) {
+    axios.get(url)
+        .then(function (resp) {
+            insertSchedule(resp.data)
+            if(save) {
+                saveDefauleSchedule(resp.data)
+            }
+            func()
+        })
+        .catch(function (err) {
+            console.log(err)
+        });
+}
+const default_notice = document.getElementById('default-notice')
+const load_default = document.getElementById('load-default')
+function saveDefauleSchedule(json) {
+    str = JSON.stringify(json)
+    localStorage.setItem("defaultSchedule", str)
+}
+
+function isDefaultSchedule() {
+    let defaultSchedule = localStorage.getItem('defaultSchedule')
+    if(defaultSchedule != '' && defaultSchedule != null) {
+        return true
+    } else {
+        return false
+    }
+}
+
+function insertSchedule(schedule) {
+    schedule.forEach(course => {
+        let ele = create(course)
+        let place = findplace(course.timeinfo.weekday)
+        insert(place, ele)
+    });
+    renderSchedule()
+    initEditMode()
+}
+
+load_default.addEventListener('click', function() {
+    let defaultSchedule = JSON.parse(localStorage.getItem('defaultSchedule'))
+    insertSchedule(defaultSchedule)
+})
+
+if (isDefaultSchedule()) {
+    default_notice.style.display = 'block'
+} else {
+    // for test
+    // gainSchedule('https:/api.limxw.com/schedule/json/18011317')
+};
 // File#: _1_modal-window
 // Usage: codyhouse.co/license
 (function() {
@@ -1129,6 +1185,25 @@ function deleteCourse (obj) {
           };
         }
       });
+    }
+  }());
+// File#: _1_notice
+// Usage: codyhouse.co/license
+(function() {
+    function initNoticeEvents(notice) {
+      notice.addEventListener('click', function(event){
+        if(event.target.closest('.js-notice__hide-control')) {
+          event.preventDefault();
+          Util.addClass(notice, 'notice--hide');
+        }
+      });
+    };
+    
+    var noticeElements = document.getElementsByClassName('js-notice');
+    if(noticeElements.length > 0) {
+      for(var i=0; i < noticeElements.length; i++) {(function(i){
+        initNoticeEvents(noticeElements[i]);
+      })(i);}
     }
   }());
 // File#: _1_password
@@ -1574,7 +1649,7 @@ function deleteCourse (obj) {
     }
 
 }());
-HTMLFormElement.prototype.serialize = function () {
+HTMLFormElement.prototype.serialize = function (type) {
     var form = this;
     // 表单数据
     var arrFormData = [], objFormData = {};
@@ -1613,8 +1688,14 @@ HTMLFormElement.prototype.serialize = function () {
         }
     });
 
-    for (var key in objFormData) {
-        arrFormData.push(key + '=' + objFormData[key].join('第'));
+    if (type == 'search') {
+        for (var key in objFormData) {
+            arrFormData.push(key + '=' + objFormData[key].join('第'));
+        }
+    } else {
+        for (var key in objFormData) {
+            arrFormData.push(key + '=' + objFormData[key].join());
+        }
     }
 
     return arrFormData.join('&');
@@ -1778,13 +1859,13 @@ advance.addEventListener('click', function (e) {
 `
     let status = !Util.hasClass(advance, 'btn--subtle');
     Util.toggleClass(advance, 'btn--subtle', status);
-    if(status) {
+    if (status) {
         advanceform.innerHTML = "";
     } else {
         advanceform.insertAdjacentHTML('beforeend', html);
         renderSelect();
     }
-    
+
 })
 
 const search = document.getElementById("search")
@@ -1793,7 +1874,8 @@ search.addEventListener('click', function (e) {
     e.preventDefault();
     Util.addClass(search, 'btn--state-b')
     empty()
-    query = searchform.serialize()
+    query = searchform.serialize('search')
+    console.log(query)
     search_div = document.getElementById("search_div")
     axios.get('https://api.limxw.com/courses/query?' + query)
         .then(function (resp) {
