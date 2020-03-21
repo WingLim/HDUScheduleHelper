@@ -32,12 +32,6 @@ load_default.addEventListener('click', function() {
 if (isDefaultSchedule()) {
     default_notice.style.display = 'block'
 } else {
-    axios.get('https://api.limxw.com/schedule/json/18011317')
-        .then(function (resp) {
-            insertSchedule(resp.data)
-            saveDefauleSchedule(resp.data)
-        })
-        .catch(function (err) {
-            console.log(err)
-        });
+    // for test
+    // gainSchedule('https:/api.limxw.com/schedule/json/18011317')
 };
