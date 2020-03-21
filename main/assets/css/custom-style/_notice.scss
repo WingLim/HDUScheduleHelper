@@ -1,0 +1,85 @@
+/* -------------------------------- 
+
+File#: _1_notice
+Title: Notice 
+Descr: Modeless notice banner, visible by default
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+.notice {
+    position: fixed;
+    bottom: var(--space-md);
+    width: 100%;
+    pointer-events: none;
+    z-index: var(--zindex-fixed-element);
+  }
+  
+  .notice__banner {
+    background-color: var(--color-bg);
+    box-shadow: var(--shadow-md);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm);
+    pointer-events: auto;
+  }
+  
+  .notice__close-btn {
+    padding: 0.5em;
+    display: block; // fallback
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: alpha(var(--color-contrast-higher), 0.85);
+    color: var(--color-bg);
+  
+    &:hover {
+      background-color: var(--color-contrast-higher);
+    }
+    
+    .icon {
+      display: block;
+    }
+  }
+  
+  .notice--hide {
+    opacity: 0;
+    visibility: hidden;
+  }
+  
+  @media screen and (prefers-reduced-motion: no-preference) {
+    .notice {
+      transition: opacity .3s, visibility 0s .3s;
+    }
+  
+    .notice__banner {
+      transition: transform .3s;
+    }
+  
+    .notice--hide {
+      .notice__banner {
+        transform: translateY(20%);
+      }
+    }
+  }
+  
+  // --v2
+  .notice--v2 {
+    bottom: 0;
+    
+    .notice__banner {
+      padding: var(--space-md) 0;
+      border-radius: 0;
+      border-left-width: 0;
+      border-right-width: 0;
+      border-bottom-width: 0;
+    }
+  }
+  
+  // --v3
+  .notice--v3 {
+    .notice__banner {
+      max-width: 320px;
+    }
+  }
