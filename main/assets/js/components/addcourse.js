@@ -28,12 +28,17 @@ function create (course) {
     html = `<li class="cd-schedule__event">
         <a data-start="${time.start}" data-end="${time.end}" href="#0" data-content='${info}' data-event="event-${range}">
             <em class="cd-schedule__name">${course.title}</em>
-           
         </a>
+        <button onclick="deletecourse(this)" class="reset" style="position: absolute;right: 5px;top: 5px; color: #fff; display: none">
+            <svg class="icon" viewBox="0 0 16 16"><title>删除课程</title><g stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"><line x1="13.5" y1="2.5" x2="2.5" y2="13.5"></line><line x1="2.5" y1="2.5" x2="13.5" y2="13.5"></line></g></svg>
+        </button>
         </li>`
     return html
 }
 
+function deletecourse (obj) { 
+    obj.parentNode.parentNode.removeChild(obj.parentNode)
+}
 
 axios.get('https://api.limxw.com/schedule/json/18011317')
     .then(function (resp) {
