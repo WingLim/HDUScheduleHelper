@@ -38,6 +38,10 @@
             <ul class="f-header__list flex-grow flex-basis-0 justify-end@md">
                 <li class="f-header__item"><a href="#0" class="f-header__link">获取课表</a></li>
                 <li class="f-header__item">
+                    <input class="checkbox" type="checkbox" id="edit_mode" onclick="initEditMode()">
+                    <label for="edit_mode">编辑模式</label>
+                </li>
+                <li class="f-header__item">
                     <a href="#0" class="f-header__btn btn btn--primary" aria-controls="drawer2">
                         <svg class="icon margin-right-xs" viewBox="0 0 24 24"><g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" stroke="currentColor" fill="none" stroke-miterlimit="10"><line x1="22" y1="22" x2="15.656" y2="15.656"></line><circle cx="10" cy="10" r="8"></circle></g></svg>
                         搜索课程
@@ -151,7 +155,7 @@
             </ul>
         </div> <!-- .cd-schedule__timeline -->
 
-        <div class="cd-schedule__events">
+        <div id="schedule_events" class="cd-schedule__events">
             <ul>
                 <li class="cd-schedule__group">
                     <div class="cd-schedule__top-info"><span>星期一</span></div>
