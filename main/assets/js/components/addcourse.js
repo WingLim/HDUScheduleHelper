@@ -35,18 +35,3 @@ function create (course) {
         </li>`
     return html
 }
-
-axios.get('https://api.limxw.com/schedule/json/18011317')
-    .then(function (resp) {
-        r = resp
-        resp.data.forEach(course => {
-            let ele = create(course)
-            let place = findplace(course.timeinfo.weekday)
-            insert(place, ele)
-        });
-        renderSchedule()
-        initEditMode()
-    })
-    .catch(function (err) {
-        console.log(err)
-    });
