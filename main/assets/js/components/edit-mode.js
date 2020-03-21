@@ -27,4 +27,4 @@ function initEditMode() {
 
 function deleteCourse (obj) { 
     obj.parentNode.parentNode.removeChild(obj.parentNode)
-}
+};
