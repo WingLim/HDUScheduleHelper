@@ -110,7 +110,7 @@
             aria-labelledby="modalTitle1" aria-describedby="modalDescription1">
             <button class="reset modal__close-btn modal__close-btn--sticky js-modal__close">
                 <svg class="icon" viewBox="0 0 20 20">
-                    <title>Close modal window</title>
+                    <title>关闭</title>
                     <polygon
                         points="18.707 2.707 17.293 1.293 10 8.586 2.707 1.293 1.293 2.707 8.586 10 1.293 17.293 2.707 18.707 10 11.414 17.293 18.707 18.707 17.293 11.414 10 18.707 2.707" />
                 </svg>
@@ -121,13 +121,13 @@
             </div>
             <form class="margin-top-md" id="gain-form">
                 <div class="floating-label margin-bottom-md">
-                    <label class="form-label" for="inputName">学号</label>
-                    <input class="form-control width-100%" type="text" name="xh" id="inputName" placeholder="学号">
+                    <label class="form-label" for="gain-xh">学号</label>
+                    <input class="form-control width-100%" type="text" name="xh" id="gain-xh" placeholder="学号">
                 </div>
                 <div class="password js-password floating-label margin-bottom-sm">
-                    <label class="form-label margin-bottom-xxxs" for="inputPassword">密码</label>
+                    <label class="form-label margin-bottom-xxxs" for="gain-pwd">密码</label>
                     <input class="form-control width-100% password__input js-password__input" type="password" name="pwd"
-                        id="inputPassword" placeholder="密码">
+                        id="gain-pwd" placeholder="密码">
 
                     <button class="password__btn flex flex-center js-password__btn js-tab-focus" aria-hidden="true">
                         <span class="password__btn-label" title="Show Password">
@@ -167,7 +167,7 @@
 
                         <div class="checkbox-list flex flex-column gap-xxxs">
                             <div>
-                                <input class="checkbox" type="checkbox" id="checkbox1" checked>
+                                <input class="checkbox" type="checkbox" id="gain-save" checked>
                                 <label for="checkbox1">记住我</label>
                             </div>
 
@@ -176,7 +176,7 @@
                 </div>
 
                 <div class="margin-bottom-sm">
-                    <button class="btn btn--primary btn--md width-100%" id="generate">
+                    <button class="btn btn--primary btn--md width-100%" id="gain-btn">
                         <span class="btn__content-a">
                             获取
                         </span>
@@ -190,7 +190,6 @@
                                         stroke-linecap="round" stroke-linejoin="round"></path>
                                 </g>
                             </svg>
-                            <span>获取中</span>
                         </span>
                     </button>
                 </div>
@@ -310,16 +309,16 @@
 
         <div class="cd-schedule__cover-layer"></div>
     </div> <!-- .cd-schedule -->
-    <div class="notice notice--v3 js-notice">
+    <div class="notice notice--v3 js-notice" id="default-notice" style="display: none;">
         <div class="container max-width-lg">
           <div class="notice__banner">
             <div class="text-component text-sm margin-bottom-md">
-              <h4>🍪 Cookie Compliance</h4>
-              <p>We use cookies to give you the best possible website experience. By using {websiteName}, you agree to our <a href="#0">Privacy Policy</a>.</p>
+              <h4>🍪 检测到课程表</h4>
+              <p>检测到本地存有课程表，是否要加载？</p>
             </div>
       
-            <button class="btn btn--primary width-100% margin-bottom-xxs js-notice__hide-control">OK, Got it!</button>
-            <button class="btn btn--subtle width-100% js-notice__hide-control">No, Thanks.</button>
+            <button id="load-default" class="btn btn--primary width-100% margin-bottom-xxs js-notice__hide-control">加载它</button>
+            <button class="btn btn--subtle width-100% js-notice__hide-control">不用了</button>
           </div>
         </div>
       </div>
