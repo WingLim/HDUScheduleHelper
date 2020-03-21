@@ -933,6 +933,37 @@ function deleteCourse (obj) {
       };
     }
   }());
+// File#: _1_floating-label
+// Usage: codyhouse.co/license
+(function() {
+    var floatingLabels = document.getElementsByClassName('floating-label');
+    if( floatingLabels.length > 0 ) {
+      var placeholderSupported = checkPlaceholderSupport(); // check if browser supports :placeholder
+      for(var i = 0; i < floatingLabels.length; i++) {
+        (function(i){initFloatingLabel(floatingLabels[i])})(i);
+      }
+  
+      function initFloatingLabel(element) {
+        if(!placeholderSupported) { // :placeholder is not supported -> show label right away
+          Util.addClass(element.getElementsByClassName('form-label')[0], 'form-label--floating');
+          return;
+        }
+        var input = element.getElementsByClassName('form-control')[0];
+        input.addEventListener('input', function(event){
+          resetFloatingLabel(element, input);
+        });
+      };
+  
+      function resetFloatingLabel(element, input) { // show label if input is not empty
+        Util.toggleClass(element.getElementsByClassName('form-label')[0], 'form-label--floating', input.value.length > 0);
+      };
+  
+      function checkPlaceholderSupport() {
+        var input = document.createElement('input');
+          return ('placeholder' in input);
+      };
+    }
+  }());
 // File#: _1_modal-window
 // Usage: codyhouse.co/license
 (function() {
@@ -1099,6 +1130,44 @@ function deleteCourse (obj) {
         }
       });
     }
+  }());
+// File#: _1_password
+// Usage: codyhouse.co/license
+(function() {
+    var Password = function(element) {
+      this.element = element;
+      this.password = this.element.getElementsByClassName('js-password__input')[0];
+      this.visibilityBtn = this.element.getElementsByClassName('js-password__btn')[0];
+      this.visibilityClass = 'password--text-is-visible';
+      this.initPassword();
+    };
+  
+    Password.prototype.initPassword = function() {
+      var self = this;
+      //listen to the click on the password btn
+      this.visibilityBtn.addEventListener('click', function(event) {
+        //if password is in focus -> do nothing if user presses Enter
+        if(document.activeElement === self.password) return;
+        event.preventDefault();
+        self.togglePasswordVisibility();
+      });
+    };
+  
+    Password.prototype.togglePasswordVisibility = function() {
+      var makeVisible = !Util.hasClass(this.element, this.visibilityClass);
+      //change element class
+      Util.toggleClass(this.element, this.visibilityClass, makeVisible);
+      //change input type
+      (makeVisible) ? this.password.setAttribute('type', 'text') : this.password.setAttribute('type', 'password');
+    };
+    
+    //initialize the Password objects
+    var passwords = document.getElementsByClassName('js-password');
+    if( passwords.length > 0 ) {
+      for( var i = 0; i < passwords.length; i++) {
+        (function(i){new Password(passwords[i]);})(i);
+      }
+    };
   }());
 (function() {
     // Schedule Template - by CodyHouse.co
