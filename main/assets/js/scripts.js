@@ -295,15 +295,20 @@ function create (course) {
     range = parseInt(Math.random() * 3 +1)
     time = course.timeinfo
     info = JSON.stringify(course)
-    html = `<li class="cd-schedule__event">
+    html = `<li class="cd-schedule__event" data-edit="true">
         <a data-start="${time.start}" data-end="${time.end}" href="#0" data-content='${info}' data-event="event-${range}">
             <em class="cd-schedule__name">${course.title}</em>
-           
         </a>
+        <button onclick="deletecourse(this)" class="reset" style="position: absolute;right: 5px;top: 5px; color: #fff; display: none">
+            <svg class="icon" viewBox="0 0 16 16"><title>删除课程</title><g stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"><line x1="13.5" y1="2.5" x2="2.5" y2="13.5"></line><line x1="2.5" y1="2.5" x2="13.5" y2="13.5"></line></g></svg>
+        </button>
         </li>`
     return html
 }
 
+function deletecourse (obj) { 
+    obj.parentNode.parentNode.removeChild(obj.parentNode)
+}
 
 axios.get('https://api.limxw.com/schedule/json/18011317')
     .then(function (resp) {
@@ -571,6 +576,18 @@ axios.get('https://api.limxw.com/schedule/json/18011317')
     function checkCustomSelectClick(select, target) { // close select when clicking outside it
       if( !select.element.contains(target) ) toggleCustomSelect(select, 'false');
     };
+
+    function renderSelect() {
+        let customSelect = document.getElementsByClassName('js-select')
+        if( customSelect.length > 0 ) {
+            let selectArray = [];
+            for( var i = 0; i < customSelect.length; i++) {
+                (function(i){selectArray.push(new CustomSelect(customSelect[i]));})(i);
+            }
+        }
+    };
+
+    window.renderSelect = renderSelect
     
     //initialize the CustomSelect objects
     var customSelect = document.getElementsByClassName('js-select');
@@ -1142,10 +1159,12 @@ axios.get('https://api.limxw.com/schedule/json/18011317')
         var self = this;
         for (var i = 0; i < this.singleEvents.length; i++) {
             // open modal when user selects an event
-            this.singleEvents[i].addEventListener('click', function (event) {
-                event.preventDefault();
-                if (!self.animating) self.openModal(this.getElementsByTagName('a')[0]);
-            });
+            if(this.singleEvents[i].getAttribute("data-edit") == "false") {
+                this.singleEvents[i].addEventListener('click', function (event) {
+                    event.preventDefault();
+                    if (!self.animating) self.openModal(this.getElementsByTagName('a')[0]);
+                });
+            }
         }
         //close modal window
         this.modalClose.addEventListener('click', function (event) {
@@ -1446,9 +1465,6 @@ axios.get('https://api.limxw.com/schedule/json/18011317')
     }
 
 }());
-let search = document.getElementById("search")
-let form = document.getElementById("search-form")
-
 HTMLFormElement.prototype.serialize = function () {
     var form = this;
     // 表单数据
@@ -1551,7 +1567,7 @@ function insert2list(ele, data) {
 function is_course_exist(start, place) {
     let column = document.getElementById(place)
     let a_list = column.getElementsByTagName('a')
-    for(let i = 0; i < a_list.length; i++) {
+    for (let i = 0; i < a_list.length; i++) {
         if (a_list[i].getAttribute('data-start') == start) {
             return true
         }
@@ -1560,27 +1576,144 @@ function is_course_exist(start, place) {
 }
 
 function select(obj) {
-    Util.addClass(obj, 'btn--state-b')
+    let succeed = document.getElementById('select-succeed')
+    let failed = document.getElementById('select-failed')
     let str = obj.getAttribute('data-content')
     let json = JSON.parse(str)
     let html = create(json)
     let place = findplace(json.timeinfo.weekday)
     if (is_course_exist(json.timeinfo.start, place)) {
-        Util.removeClass(obj, 'btn--state-b')
-        Util.addClass(obj, 'btn--state-d')
+        showHint(failed)
     } else {
         insert(place, html)
         renderSchedule()
-        Util.removeClass(obj, 'btn--state-b')
-        Util.addClass(obj, 'btn--state-c')
+        showHint(succeed)
     }
 }
 
+const advance = document.getElementById("advance-search")
+const advanceform = document.getElementById("advance-form")
+advance.addEventListener('click', function (e) {
+    e.preventDefault();
+    let html = `
+
+    <div class="margin-bottom-sm flex flex-row">
+        <div class="select inline-block js-select flex items-start flex-column" data-trigger-class="btn btn--subtle">
+            <label class="form-label margin-bottom-xxxs" for="property">课程性质:</label>
+            <select name="property" id="property">
+                <optgroup label="必修课">
+                    <option value="学科必修">学科必修</option>
+                    <option value="专业必修">专业必修</option>
+                    <option value="通识必修">通识必修</option>
+                    <option value="实践必修">实践必修</option>
+                    <option value="课外必修">课外必修</option>
+                    <option value="英语必修">英语必修</option>
+                </optgroup>
+                <optgroup label="公选课">
+                    <option value="科技发展与科学精神">科技发展与科学精神</option>
+                    <option value="艺术创作与审美体验">艺术创作与审美体验</option>
+                    <option value="社会发展与公民教育">社会发展与公民教育</option>
+                    <option value="文明对话与国际视野">文明对话与国际视野</option>
+                    <option value="人文经典与人文修养">人文经典与人文修养</option>
+                </optgroup>
+                <optgroup label="选修课">
+                    <option value="专业选修">专业选修</option>
+                    <option value="通识选修">通识选修</option>
+                    <option value=""></option>
+                </optgroup>
+            </select>
+
+            <svg class="icon icon--xs margin-left-xxxs" aria-hidden="true" viewBox="0 0 16 16">
+                <polygon points="3,5 8,11 13,5 "></polygon>
+            </svg>
+        </div>
+    
+    <div class="select inline-block js-select items-start flex-column margin-left-md" data-trigger-class="btn btn--subtle">
+        <label class="form-label margin-bottom-xxxs" for="weekday">日期:</label>
+        <select name="time" id="weekday">
+            <option value="周一" selected>周一</option>
+            <option value="周二">周二</option>
+            <option value="周三">周三</option>
+            <option value="周四">周四</option>
+            <option value="周五">周五</option>
+            <option value="周六">周六</option>
+            <option value="周日">周日</option>
+        </select>
+
+        <svg class="icon icon--xs margin-left-xxxs" aria-hidden="true" viewBox="0 0 16 16">
+            <polygon points="3,5 8,11 13,5 "></polygon>
+        </svg>
+    </div>
+    
+    <div class="select inline-block js-select margin-left-md" data-trigger-class="btn btn--subtle">
+        <label class="form-label margin-bottom-xxxs" for="time">时间:</label>
+        <select name="time" id="time">
+            <optgroup label="两节课">
+                <option value="1,2节" selected>1,2节</option>
+                <option value="3,4节">3,4节</option>
+                <option value="6,7节">6,7节</option>
+                <option value="8,9节">8,9节</option>
+                <option value="10,11节">10,11节</option>
+            </optgroup>
+            <optgroup label="三节课">
+                <option value="3,4,5节">3,4,5节</option>
+                <option value="6,7,8节">6,7,8节</option>
+                <option value="10,11,12节">10,11,12节</option>
+            </optgroup>
+        </select>
+
+        <svg class="icon icon--xs margin-left-xxxs" aria-hidden="true" viewBox="0 0 16 16">
+            <polygon points="3,5 8,11 13,5 "></polygon>
+        </svg>
+    </div>
+`
+    let status = !Util.hasClass(advance, 'btn--subtle');
+    Util.toggleClass(advance, 'btn--subtle', status);
+    if(status) {
+        advanceform.innerHTML = "";
+    } else {
+        advanceform.insertAdjacentHTML('beforeend', html);
+        renderSelect();
+    }
+    
+})
+
+let schedule_events = document.getElementById('schedule-events');
+let eventsul = schedule_events.getElementsByTagName('ul')
+let events = eventsul.getElementsByTagName('li')
+
+function showbtn(event, status) {
+    let c = event.childNodes;
+    c[3].style.display = status;
+}
+
+function test2() {
+    for(let i=0; i<events.length; i++){
+        events[i].addEventListener('mouseover', showbtn(events[i], 'block'))
+        events[i].addEventListener('mouseout', showbtn(events[i], 'none'))
+    }
+}
+test2()
+
+function edit_mode() {
+    
+    for(let i=0; i<events.length; i++){
+        if (events[i].getAttribute('data-edit') == 'true'){
+            events[i].setAttribute('data-edit', 'false')
+        } else {
+            events[i].setAttribute('data-edit', 'true')
+        }
+    }
+    renderSchedule()
+}
+
+const search = document.getElementById("search")
+const searchform = document.getElementById("search-form")
 search.addEventListener('click', function (e) {
     e.preventDefault();
     Util.addClass(search, 'btn--state-b')
     empty()
-    query = form.serialize()
+    query = searchform.serialize()
     search_div = document.getElementById("search_div")
     axios.get('https://api.limxw.com/courses/query?' + query)
         .then(function (resp) {
