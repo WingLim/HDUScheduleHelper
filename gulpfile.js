@@ -13,9 +13,11 @@ var del = require('del')
 var dist = {
     root: "dist/",
     html: "dist/",
+    favicons: "dist/favicons",
     assets: "dist/assets"
 }
 var src = {
+    favicons: "main/assets/favicons/*",
     html: "main/*.html"
 }
 
@@ -41,6 +43,11 @@ function clean(done) {
 function html() {
     return gulp.src(src.html)
       .pipe(gulp.dest(dist.html))
+}
+
+function favicons() {
+    return gulp.src(src.favicons)
+      .pipe(gulp.dest(dist.favicons))
 }
 
 gulp.task('sass', function() {
@@ -95,6 +102,7 @@ gulp.task('watch', gulp.series(['browserSync', 'sass', 'scripts'], function () {
 gulp.task('build', gulp.series(
     clean,
     html,
+    favicons,
     ['sass', 'scripts'],
     function(done) {
         console.log('build success');
