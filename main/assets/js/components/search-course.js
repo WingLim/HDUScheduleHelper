@@ -206,6 +206,7 @@ advance.addEventListener('click', function (e) {
         advanceform.innerHTML = "";
     } else {
         advanceform.insertAdjacentHTML('beforeend', html);
+        renderSelect();
     }
     
 })
