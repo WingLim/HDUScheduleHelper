@@ -1356,7 +1356,6 @@ if (isDefaultSchedule()) {
     };
     function showDetail(element) {
         var event = new CustomEvent('showDetail');
-        console.log(element)
         element.dispatchEvent(event);
     };
 
@@ -1405,6 +1404,8 @@ if (isDefaultSchedule()) {
 
             var HeaderBgScaleY = modalHeight / eventHeight,
                 BodyBgScaleX = (modalWidth - eventWidth);
+            
+            modalWidth = modalWidth - 130
 
             //change modal height/width and translate it
             self.modal.setAttribute('style', 'top:' + eventTop + 'px;left:' + eventLeft + 'px;height:' + modalHeight + 'px;width:' + modalWidth + 'px;transform: translateY(' + modalTranslateY + 'px) translateX(' + modalTranslateX + 'px)');
@@ -1563,11 +1564,25 @@ if (isDefaultSchedule()) {
         }
         CourseInfo = `
         <div>
-            <h1>详细信息</h1>
-            <h2>任课老师：${course.teacher}</h2>
-            <h2>上课教室：${course.location}</h2>
-            <h2>开始结束周：${course.timeinfo.start} - ${course.timeinfo.end}</h2>
-            <h2>周次：${flag}</h2>
+        <h2>详细信息</h2>
+        <table class="prop-table width-100%">
+            <tr class="prop-table__row">
+                <th class="prop-table__cell prop-table__cell--th">任课老师</th>
+                <td class="prop-table__cell">${course.teacher}</td>
+            </tr>
+            <tr class="prop-table__row">
+                <th class="prop-table__cell prop-table__cell--th">上课教室</th>
+                <td class="prop-table__cell">${course.location}</td>
+            </tr>
+            <tr class="prop-table__row">
+                <th class="prop-table__cell prop-table__cell--th">开始结束周</th>
+                <td class="prop-table__cell">第 ${course.timeinfo.week.start} - ${course.timeinfo.week.end} 周</td>
+            </tr>
+            <tr class="prop-table__row">
+                <th class="prop-table__cell prop-table__cell--th">周次</th>
+                <td class="prop-table__cell">${flag}</td>
+            </tr>
+        </table>
         </div>
         `
         self.modal.getElementsByClassName('cd-schedule-modal__event-info')[0].innerHTML = CourseInfo;
