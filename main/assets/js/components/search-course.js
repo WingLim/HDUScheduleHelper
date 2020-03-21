@@ -1,4 +1,4 @@
-HTMLFormElement.prototype.serialize = function () {
+HTMLFormElement.prototype.serialize = function (type) {
     var form = this;
     // 表单数据
     var arrFormData = [], objFormData = {};
@@ -37,8 +37,14 @@ HTMLFormElement.prototype.serialize = function () {
         }
     });
 
-    for (var key in objFormData) {
-        arrFormData.push(key + '=' + objFormData[key].join('第'));
+    if (type == 'search') {
+        for (var key in objFormData) {
+            arrFormData.push(key + '=' + objFormData[key].join('第'));
+        }
+    } else {
+        for (var key in objFormData) {
+            arrFormData.push(key + '=' + objFormData[key].join());
+        }
     }
 
     return arrFormData.join('&');
@@ -202,13 +208,13 @@ advance.addEventListener('click', function (e) {
 `
     let status = !Util.hasClass(advance, 'btn--subtle');
     Util.toggleClass(advance, 'btn--subtle', status);
-    if(status) {
+    if (status) {
         advanceform.innerHTML = "";
     } else {
         advanceform.insertAdjacentHTML('beforeend', html);
         renderSelect();
     }
-    
+
 })
 
 const search = document.getElementById("search")
@@ -217,7 +223,8 @@ search.addEventListener('click', function (e) {
     e.preventDefault();
     Util.addClass(search, 'btn--state-b')
     empty()
-    query = searchform.serialize()
+    query = searchform.serialize('search')
+    console.log(query)
     search_div = document.getElementById("search_div")
     axios.get('https://api.limxw.com/courses/query?' + query)
         .then(function (resp) {
