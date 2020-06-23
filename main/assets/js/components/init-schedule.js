@@ -17,7 +17,7 @@ function isDefaultSchedule() {
 function insertSchedule(schedule) {
     schedule.forEach(course => {
         let ele = create(course)
-        let place = findplace(course.timeinfo.weekday)
+        let place = course.timeinfo.weekday
         insert(place, ele)
     });
     renderSchedule()

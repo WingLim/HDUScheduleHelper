@@ -297,7 +297,7 @@ function create (course) {
     info = JSON.stringify(course)
     html = `<li class="cd-schedule__event">
         <a data-start="${time.start}" data-end="${time.end}" href="#0" data-content='${info}' data-event="event-${range}">
-            <em class="cd-schedule__name">${course.title}</em>
+            <em class="cd-schedule__name">${course.name}</em>
         </a>
         <button class="delete-course reset" onclick="deleteCourse(this)" style="position: absolute;right: 5px;top: 5px; color: #fff; cursor: pointer;">
             <svg class="icon" viewBox="0 0 16 16"><title>删除课程</title><g stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"><line x1="13.5" y1="2.5" x2="2.5" y2="13.5"></line><line x1="2.5" y1="2.5" x2="13.5" y2="13.5"></line></g></svg>
@@ -1002,7 +1002,7 @@ function isDefaultSchedule() {
 function insertSchedule(schedule) {
     schedule.forEach(course => {
         let ele = create(course)
-        let place = findplace(course.timeinfo.weekday)
+        let place = course.timeinfo.weekday
         insert(place, ele)
     });
     renderSchedule()
