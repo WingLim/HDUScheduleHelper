@@ -1,8 +1,10 @@
 <script>
   import Select from 'svelte-select'
   import { slide } from 'svelte/transition'
-  import { searchResult } from '../../lib/store'
+  import { searchResult, boolMoreButton } from '../../lib/store'
   import { apiUrl } from '../../config'
+
+  export let page
 
   let title
 
@@ -65,16 +67,36 @@
     if (paramsMap.has('weekday')) {
       params += '&weekday=' + paramsMap.get('weekday')
     }
+    if (page) {
+      params += '&page=' + page 
+    }
     return apiUrl + params
   }
   
   async function searchCourse() {
+    page = 0
     await fetch(buildRequestUrl())
     .then(function(resp) {
       return resp.json()
     })
     .then(function(json) {
       $searchResult = json
+    })
+    .catch(function(err) {
+      console.log(err)
+    })
+  }
+
+  async function loadMore() {
+    await fetch(buildRequestUrl())
+    .then(function(resp) {
+      return resp.json()
+    })
+    .then(function(json) {
+      if (json.length == 0) {
+        $boolMoreButton = false
+      }
+      $searchResult = [...$searchResult, ...json]
     })
     .catch(function(err) {
       console.log(err)
@@ -90,6 +112,9 @@
 
   $: if (paramsMap) {
     searchCourse()
+  }
+  $: if (page) {
+    loadMore()
   }
 </script>
 
