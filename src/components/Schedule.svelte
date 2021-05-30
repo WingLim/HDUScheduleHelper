@@ -6,8 +6,8 @@
   import { times, weekdays } from '../lib/constant'
 
   let boolSearch = true
-  function showSearch() {
-    boolSearch = true
+  function toggleSearch() {
+    boolSearch = !boolSearch
   }
 
   function hideSearch() {
@@ -20,7 +20,7 @@
   <div class="flex justify-between px-5 items-center">
     <h1 class="m-0">HDU 课程助手</h1>
     <div>
-      <Button clickFn={showSearch} type="primary">
+      <Button clickFn={toggleSearch} type="primary">
         <svg class="icon mr-1" viewBox="0 0 24 24">
           <g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" stroke="currentColor" fill="none" stroke-miterlimit="10">
               <line x1="22" y1="22" x2="15.656" y2="15.656"></line>
