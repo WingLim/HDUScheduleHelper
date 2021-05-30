@@ -81,10 +81,6 @@
     })
   }
 
-  function showAdvance() {
-    boolAdvance = !boolAdvance
-  }
-
   $: if (paramsMap) {
     searchCourse()
   }
@@ -97,7 +93,7 @@
   <div class="flex gap-1 flex-row mb-4">
     <input class="searchInput" type="text" placeholder="课程名" bind:value={title} on:input={searchCourse}>
     <button class="btn btn-primary" type="submit">搜索</button>
-    <button class="btn {boolAdvance ? 'active' : ''}" on:click={showAdvance}>高级搜索</button>
+    <button class="btn {boolAdvance ? 'active' : ''}" on:click={() => {boolAdvance = !boolAdvance}}>高级搜索</button>
   </div>
   
   {#if boolAdvance}
