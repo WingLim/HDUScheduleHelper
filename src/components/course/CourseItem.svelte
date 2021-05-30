@@ -17,6 +17,7 @@
   ]
   let randomIndex = Math.floor(Math.random() * colors.length)
   let randomColor = colors[randomIndex]
+  let boolDeleteBtn = false
 
   onMount(() => {
     let pos = options.position
@@ -39,10 +40,19 @@
     $idMap = $idMap
   }
 
+  function showDeleteBtn() {
+    boolDeleteBtn = true
+  }
+  function hideDeleteBtn() {
+    boolDeleteBtn = false
+  }
+
 </script>
 
-<div transition:fade class="course {randomColor} {options.warn === true ? 'warn' : ''}" {style}>
-  <button on:click={() => handleRemove(options.id)} class="removeBtn hover:shadow-lg">
+<div on:mouseover={showDeleteBtn} on:mouseleave={hideDeleteBtn} transition:fade class="course {randomColor} {options.warn === true ? 'warn' : ''}" {style}>
+  <div class="h-4">
+  {#if boolDeleteBtn}
+  <button transition:fade on:click={() => handleRemove(options.id)} class="removeBtn hover:shadow-lg">
     <svg class="icon" viewBox="0 0 16 16">
       <title>删除课程</title>
       <g stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10">
@@ -51,6 +61,8 @@
       </g>
     </svg>
   </button>
+  {/if}
+  </div>
   <p>{course.title}</p>
   <p>{course.teacher}</p>
   <p>{info.location}</p>
