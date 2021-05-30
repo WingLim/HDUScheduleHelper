@@ -1,15 +1,5 @@
 <script lang="ts">
   import Schedule from './components/Schedule.svelte'
-  
-
-  const toastOptions = {
-    theme: {
-      '--toastContainerTop': 'auto',
-      '--toastContainerRight': 'auto',
-      '--toastContainerBottom': '8rem',
-      '--toastContainerLeft': 'calc(50vw - 8rem)',
-    }
-  }
 </script>
 
 <main>
