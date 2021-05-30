@@ -2,6 +2,7 @@
   import Table from './Table.svelte'
   import Form from './Form.svelte'
   import Header from './Header.svelte'
+  import Button from '../elements/Button.svelte'
   import { boolMoreButton } from '../../lib/store'
   
   export let shown
@@ -22,10 +23,16 @@
         <Table />
       </div>
       {#if $boolMoreButton}
-      <button class="btn mt-4" on:click={showMore}>
+      <Button className="mt-4" clickFn={showMore}>
         查看更多
-      </button>
+      </Button>
       {/if}
     </div>
   </div>
 {/if}
+
+<style>
+  :global(.mt-4) {
+    @apply mt-4;
+  }
+</style>

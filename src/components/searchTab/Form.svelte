@@ -1,5 +1,6 @@
 <script>
   import Select from 'svelte-select'
+  import Button from '../elements/Button.svelte'
   import { slide } from 'svelte/transition'
   import { searchResult, boolMoreButton } from '../../lib/store'
   import { apiUrl } from '../../config'
@@ -12,6 +13,7 @@
   let paramsMap = new Map()
   const groupBy = (item) => item.group
 
+  // 重新赋值 paramsMap, 触发 svelte 更新
   function updateParamsMap() {
     paramsMap = paramsMap
   }
@@ -92,8 +94,10 @@
 <form on:submit|preventDefault={searchCourse} >
   <div class="flex gap-1 flex-row mb-4">
     <input class="searchInput" type="text" placeholder="课程名" bind:value={title} on:input={searchCourse}>
-    <button class="btn btn-primary" type="submit">搜索</button>
-    <button class="btn {boolAdvance ? 'active' : ''}" on:click={() => {boolAdvance = !boolAdvance}}>高级搜索</button>
+    <Button type="primary">搜索</Button>
+    <Button type="{boolAdvance ? 'primary' : ''}" clickFn="{() => {boolAdvance = !boolAdvance}}">
+      高级搜索
+    </Button>
   </div>
   
   {#if boolAdvance}
