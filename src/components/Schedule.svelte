@@ -1,7 +1,7 @@
 <script>
-  import Course from './course/Course.svelte'
+  import Course from './course/CourseItem.svelte'
   import SearchCourses from './searchTab/Search.svelte'
-  import { courses, idMap } from '../lib/store'
+  import { courses } from '../lib/store'
   import { times, weekdays } from '../lib/constant'
 
   let boolSearch = true
@@ -11,16 +11,6 @@
 
   function hideSearch() {
     boolSearch = false
-  }
-
-  function removeFn(id) {
-    let keys = $idMap.get(id)
-    keys.forEach(key => {
-      $courses.delete(key)
-    })
-    $idMap.delete(id)
-    $courses = $courses
-    $idMap = $idMap
   }
 </script>
 
@@ -57,7 +47,7 @@
     {/each}
 
     {#each [...$courses] as [key, options] (key) }
-      <Course {options} {removeFn}/>
+      <Course {options}/>
     {/each}
   </div>
   </div>
