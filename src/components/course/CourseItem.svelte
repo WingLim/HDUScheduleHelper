@@ -1,9 +1,9 @@
 <script>
   import { fade } from 'svelte/transition'
   import { onMount } from 'svelte'
+  import { courses, idMap } from '../../lib/store'
 
   export let options = {}
-  export let removeFn
 
   let style = ''
   let course = options.course
@@ -29,10 +29,20 @@
     style += 'grid-column-start: ' + col_start + ';'
   }
 
+  function handleRemove(id) {
+    let keys = $idMap.get(id)
+    keys.forEach(key => {
+      $courses.delete(key)
+    })
+    $idMap.delete(id)
+    $courses = $courses
+    $idMap = $idMap
+  }
+
 </script>
 
 <div transition:fade class="course {randomColor} {options.warn === true ? 'warn' : ''}" {style}>
-  <button on:click={() => removeFn(options.id)} class="removeBtn hover:shadow-lg">
+  <button on:click={() => handleRemove(options.id)} class="removeBtn hover:shadow-lg">
     <svg class="icon" viewBox="0 0 16 16">
       <title>删除课程</title>
       <g stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10">
