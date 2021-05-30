@@ -23,7 +23,7 @@
 
 <tr>
   <td {rowspan} class="p-2">
-    <button title="查看详情" on:click={toggleDetail} class="expand hover:border-blue-300 {!boolDetail ? 'collapsed': ''}"></button>
+    <button title="查看详情" on:click={toggleDetail} class="expand hover:border-blue-600 {!boolDetail ? 'collapsed': ''}"></button>
   </td>
   <td {rowspan}>{item.title}</td>
   <td {rowspan}>{item.teacher}</td>
