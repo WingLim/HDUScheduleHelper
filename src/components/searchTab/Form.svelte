@@ -9,6 +9,7 @@
   export let page
 
   let title
+  let location
   let boolAdvance = true
   let paramsMap = new Map()
   const groupBy = (item) => item.group
@@ -40,6 +41,9 @@
     let params = ''
     if (title) {
       params += '&title=' + title
+    }
+    if (location) {
+      params += '&location=' + location
     }
     if (paramsMap.has('property')) {
       params += '&property=' + paramsMap.get('property')
@@ -109,6 +113,10 @@
     <div class="flex flex-col ml-4">
       <label for="">日期</label>
       <Select items={weekdayItems} selectedValue='周一' on:select={handleWeekdaySelect} on:clear={handleWeekdayClear} />
+    </div>
+    <div class="flex flex-col ml-4">
+      <label for="">上课地点</label>
+      <input type="text" class="searchInput" bind:value={location} on:input={searchCourse} placeholder="6教">
     </div>
   </div>
   {/if}
