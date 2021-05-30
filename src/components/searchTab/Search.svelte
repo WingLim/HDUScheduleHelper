@@ -1,9 +1,15 @@
 <script>
   import Table from './Table.svelte'
   import Form from './Form.svelte'
+  import { searchResult, boolMoreButton } from '../../lib/store'
   
   export let shown
   export let hideFn
+
+  let page = 0
+  function showMore() {
+    page += 1
+  }
 </script>
 
 {#if shown == true}
@@ -21,10 +27,15 @@
       </button>
     </header>
     <div class="py-4 px-5">
-      <Form />
-      <div class="pt-2">
+      <Form {page} />
+      <div class="pt-2 max-h-[90vh] overflow-auto">
         <Table />
       </div>
+      {#if $boolMoreButton}
+      <button class="btn mt-4" on:click={showMore}>
+        查看更多
+      </button>
+      {/if}
     </div>
   </div>
 {/if}
