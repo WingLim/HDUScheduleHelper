@@ -11,7 +11,7 @@
   let title
   let location
   let teacher
-  let boolAdvance = true
+  let boolAdvance = false
   let paramsMap = new Map()
   const groupBy = (item) => item.group
 
