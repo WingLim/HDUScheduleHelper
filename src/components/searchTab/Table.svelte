@@ -1,7 +1,6 @@
 <script>
   import { getPosition } from '../../lib/utils'
   import { courses, idMap, searchResult } from '../../lib/store'
-  import { danger } from '../../lib/toast'
   import Item from './TableItem.svelte'
 
   let tableHeads = [
@@ -43,8 +42,6 @@
             $courses = $courses
           }
         })
-
-        danger('课程冲突')
       })
       
     } else {
