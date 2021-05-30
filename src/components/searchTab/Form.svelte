@@ -127,9 +127,6 @@
   .searchInput:focus {
     @apply border-blue-600;
   }
-  .active {
-    @apply bg-blue-600 text-white;
-  }
   .themed {
     @apply text-left;
     --border: 2px solid rgba(209, 213, 219);
