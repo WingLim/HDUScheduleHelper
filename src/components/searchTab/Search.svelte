@@ -1,7 +1,7 @@
 <script>
   import Table from './Table.svelte'
   import Form from './Form.svelte'
-  import { searchResult, boolMoreButton } from '../../lib/store'
+  import { boolMoreButton } from '../../lib/store'
   
   export let shown
   export let hideFn
