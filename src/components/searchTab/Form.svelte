@@ -10,6 +10,7 @@
 
   let title
   let location
+  let teacher
   let boolAdvance = true
   let paramsMap = new Map()
   const groupBy = (item) => item.group
@@ -44,6 +45,9 @@
     }
     if (location) {
       params += '&location=' + location
+    }
+    if (teacher) {
+      params += '&teacher=' + teacher
     }
     if (paramsMap.has('property')) {
       params += '&property=' + paramsMap.get('property')
@@ -105,18 +109,26 @@
   </div>
   
   {#if boolAdvance}
-  <div transition:slide class="themed flex flex-row">
-    <div class="flex flex-grow flex-col">
-      <label for="">课程性质</label>
-      <Select items={propertyItems} selectedValue='学科必修' {groupBy} on:select={handlePropertySelect} on:clear={handlePropertyClear} />
+  <div transition:slide class="text-left">
+    <div class="flex flex-row">
+      <div class="themed flex flex-grow flex-col">
+        <label for="">课程性质</label>
+        <Select items={propertyItems} selectedValue='学科必修' {groupBy} on:select={handlePropertySelect} on:clear={handlePropertyClear} />
+      </div>
+      <div class="themed flex flex-col ml-4">
+        <label for="">日期</label>
+        <Select items={weekdayItems} selectedValue='周一' on:select={handleWeekdaySelect} on:clear={handleWeekdayClear} />
+      </div>
     </div>
-    <div class="flex flex-col ml-4">
-      <label for="">日期</label>
-      <Select items={weekdayItems} selectedValue='周一' on:select={handleWeekdaySelect} on:clear={handleWeekdayClear} />
-    </div>
-    <div class="flex flex-col ml-4">
-      <label for="">上课地点</label>
-      <input type="text" class="searchInput" bind:value={location} on:input={searchCourse} placeholder="6教">
+    <div class="flex flex-row">
+      <div class="flex flex-col flex-grow">
+        <label for="">上课地点</label>
+        <input type="text" class="searchInput" bind:value={location} on:input={searchCourse} placeholder="6教">
+      </div>
+      <div class="flex flex-col ml-4">
+        <label for="">教师</label>
+        <input type="text" class="searchInput" bind:value={teacher} on:input={searchCourse} placeholder="...">
+      </div>
     </div>
   </div>
   {/if}
@@ -134,7 +146,6 @@
     @apply border-blue-600;
   }
   .themed {
-    @apply text-left;
     --border: 2px solid rgba(209, 213, 219);
     --borderRadius: 0.375rem;
     --itemIsActiveBG: rgba(37, 99, 235);
