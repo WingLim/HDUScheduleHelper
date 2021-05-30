@@ -101,16 +101,14 @@
   </div>
   
   {#if boolAdvance}
-  <div transition:slide>
-    <div class="themed flex flex-row">
-      <div class="flex items-start flex-col">
-        <label for="">课程性质</label>
-        <Select items={propertyItems} selectedValue='学科必修' {groupBy} on:select={handlePropertySelect} on:clear={handlePropertyClear} />
-      </div>
-      <div class="flex items-start flex-col ml-4">
-        <label for="">日期</label>
-        <Select items={weekdayItems} selectedValue='周一' on:select={handleWeekdaySelect} on:clear={handleWeekdayClear} />
-      </div>
+  <div transition:slide class="themed flex flex-row">
+    <div class="flex flex-grow flex-col">
+      <label for="">课程性质</label>
+      <Select items={propertyItems} selectedValue='学科必修' {groupBy} on:select={handlePropertySelect} on:clear={handlePropertyClear} />
+    </div>
+    <div class="flex flex-col ml-4">
+      <label for="">日期</label>
+      <Select items={weekdayItems} selectedValue='周一' on:select={handleWeekdaySelect} on:clear={handleWeekdayClear} />
     </div>
   </div>
   {/if}
