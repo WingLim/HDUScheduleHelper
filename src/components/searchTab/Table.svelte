@@ -82,10 +82,12 @@
   <tbody>
     
     {#each $searchResult as item}
+    {#if item.status == '已开'}
     {#if item.time_info.length == 1}
       <Item {item} {addCourse}/>
     {:else}
       <Item {item} {addCourse} count={2}/>
+    {/if}
     {/if}
     {/each}
 
