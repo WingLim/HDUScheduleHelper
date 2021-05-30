@@ -1,4 +1,5 @@
 <script>
+  import Button from '../elements/Button.svelte'
   import { onMount } from 'svelte'
   import { slide } from 'svelte/transition'
 
@@ -38,7 +39,7 @@
     </div>
   </td>
   <td {rowspan}>
-    <button class="btn m-2" on:click={() => addCourse(item)}>选择</button>
+    <Button className="m-2" clickFn={() => addCourse(item)}>选择</Button>
   </td>
 </tr>
 {#if count == 2}
@@ -76,6 +77,9 @@
 {/if}
 
 <style>
+  :global(.m-2) {
+    @apply m-2;
+  }
   .expand {
     @apply inline-flex bg-white cursor-pointer relative;
     @apply border border-solid border-gray-100 box-border;
