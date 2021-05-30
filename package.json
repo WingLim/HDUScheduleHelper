@@ -1,9 +1,20 @@
 {
   "name": "hduschedulehelper",
-  "version": "1.0.0",
-  "description": "HDU Schedule Helper for student to arrange courses.",
-  "main": "index.js",
-  "repository": "git@github.com:WingLim/HDUScheduleHelper.git",
-  "author": "WingLim <643089849@qq.com>",
-  "license": "MIT"
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^1.0.0-next.10",
+    "svelte": "^3.38.2",
+    "svelte-preprocess": "^4.7.3",
+    "svelte-select": "^3.17.0",
+    "svelte-windicss-preprocess": "^4.0.7",
+    "typescript": "^4.3.2",
+    "vite": "^2.3.4",
+    "vite-plugin-windicss": "^0.16.7",
+    "windicss": "^3.0.12"
+  }
 }
