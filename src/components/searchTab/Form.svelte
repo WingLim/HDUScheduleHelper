@@ -5,7 +5,6 @@
   import { apiUrl } from '../../config'
 
   let title
-  let propertyValue
 
   const propertyItems = [
     {value: '学科必修', label: '学科必修', group: '必修课'},
@@ -35,13 +34,26 @@
 
   const groupBy = (item) => item.group
 
+  function updateParamsMap() {
+    paramsMap = paramsMap
+  }
+
   function handlePropertySelect(event) {
-    propertyValue = event.detail.value
-    searchCourse()
+    paramsMap.set('property', event.detail.value)
+    updateParamsMap()
+  }
+  function handlePropertyClear(event) {
+    paramsMap.delete('property')
+    updateParamsMap()
   }
 
   function handleWeekdaySelect(event) {
-    console.log(event.detail)
+    paramsMap.set('weekday', event.detail.value)
+    updateParamsMap()
+  }
+  function handleWeekdayClear(event) {
+    paramsMap.delete('weekday')
+    updateParamsMap()
   }
 
   function buildRequestUrl() {
@@ -49,8 +61,11 @@
     if (title) {
       params += '&title=' + title
     }
-    if (propertyValue) {
-      params += '&property=' + propertyValue
+    if (paramsMap.has('property')) {
+      params += '&property=' + paramsMap.get('property')
+    }
+    if (paramsMap.has('weekday')) {
+      params += '&weekday=' + paramsMap.get('weekday')
     }
     return apiUrl + params
   }
@@ -72,6 +87,12 @@
   function showAdvance() {
     boolAdvance = !boolAdvance
   }
+
+  let paramsMap = new Map()
+
+  $: if (paramsMap) {
+    searchCourse()
+  }
 </script>
 
 <form on:submit|preventDefault={searchCourse} >
@@ -86,11 +107,11 @@
     <div class="themed flex flex-row">
       <div class="flex items-start flex-col">
         <label for="">课程性质</label>
-        <Select items={propertyItems} selectedValue='学科必修' {groupBy} on:select={handlePropertySelect} />
+        <Select items={propertyItems} selectedValue='学科必修' {groupBy} on:select={handlePropertySelect} on:clear={handlePropertyClear} />
       </div>
       <div class="flex items-start flex-col ml-4">
         <label for="">日期</label>
-        <Select items={weekdayItems} selectedValue='周一' on:select={handleWeekdaySelect} />
+        <Select items={weekdayItems} selectedValue='周一' on:select={handleWeekdaySelect} on:clear={handleWeekdayClear} />
       </div>
     </div>
   </div>
