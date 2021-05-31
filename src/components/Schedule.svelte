@@ -5,7 +5,7 @@
   import Button from './elements/Button.svelte'
   import Settings from './Settings.svelte'
   import { courses, idMap, weekdaysStore, boolWeekendMode } from '../lib/store'
-  import { times } from '../lib/constant'
+  import { times, weekend } from '../lib/constant'
 
   let boolSearch = true
   function toggleSearch() {
@@ -17,6 +17,9 @@
 
   function readConfig() {
     $boolWeekendMode = localStorage.getItem('weekendMode') == 'true'
+    if ($boolWeekendMode) {
+      $weekdaysStore = [...$weekdaysStore, ...weekend]
+    }
 
     let coursesStr = localStorage.getItem('courses')
     $courses = new Map(JSON.parse(coursesStr))
