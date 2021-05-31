@@ -1,6 +1,6 @@
 <script>
-  import { getPosition } from '../../lib/utils'
-  import { courses, idMap, searchResult } from '../../lib/store'
+  import { getPosition, saveToLocal } from '../../lib/utils'
+  import { courses, idMap, searchResult, boolSaveToLocal } from '../../lib/store'
   import Item from './TableItem.svelte'
 
   let tableHeads = [
@@ -77,6 +77,7 @@
       })
       $idMap.set(id, keys)
       $idMap = $idMap
+      saveToLocal()
     }
   }
 

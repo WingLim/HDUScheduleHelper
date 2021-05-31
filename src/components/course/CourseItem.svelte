@@ -2,6 +2,7 @@
   import { fade } from 'svelte/transition'
   import { onMount } from 'svelte'
   import { courses, idMap } from '../../lib/store'
+  import { saveToLocal } from '../../lib/utils'
 
   export let options = {}
 
@@ -38,6 +39,7 @@
     $idMap.delete(id)
     $courses = $courses
     $idMap = $idMap
+    saveToLocal()
   }
 
   function showDeleteBtn() {
