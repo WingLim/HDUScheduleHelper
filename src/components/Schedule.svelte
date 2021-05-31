@@ -1,9 +1,10 @@
 <script>
+  import { onMount } from 'svelte'
   import Course from './course/CourseItem.svelte'
   import SearchCourses from './searchTab/Search.svelte'
   import Button from './elements/Button.svelte'
   import Settings from './Settings.svelte'
-  import { courses, weekdaysStore } from '../lib/store'
+  import { courses, idMap, weekdaysStore } from '../lib/store'
   import { times, weekdays, weekend } from '../lib/constant'
 
   let boolWeekendMode = false
@@ -11,19 +12,38 @@
   function toggleSearch() {
     boolSearch = !boolSearch
   }
-
   function hideSearch() {
     boolSearch = false
   }
 
+  function readConfigAndSet() {
+    boolWeekendMode = localStorage.getItem('weekendMode') == 'true'
+    setWeekendMode()
+
+    let coursesStr = localStorage.getItem('courses')
+    $courses = new Map(JSON.parse(coursesStr))
+    
+    let idMapStr = localStorage.getItem('idMap')
+    $idMap = new Map(JSON.parse(idMapStr))
+  }
+
   function switchWeekendMode() {
     boolWeekendMode = !boolWeekendMode
+    localStorage.setItem('weekendMode', String(boolWeekendMode))
+    setWeekendMode()
+  }
+
+  function setWeekendMode() {
     if (boolWeekendMode) {
       $weekdaysStore = [...$weekdaysStore, ...weekend]
     } else {
       $weekdaysStore = weekdays
     }
   }
+
+  onMount(() => {
+    readConfigAndSet()
+  })
 </script>
 
 <div class="{boolSearch ? 'showSearchBarFlex': ''}" >

@@ -56,7 +56,17 @@
       })
       $idMap.set(id, keys)
       $idMap = $idMap
+      saveToLocal()
     }
+  }
+
+  function saveToLocal() {
+    let coursesStr = JSON.stringify(Array.from($courses.entries()))
+    localStorage.setItem('courses', coursesStr)
+
+    let idMapStr = JSON.stringify(Array.from($idMap.entries()))
+    localStorage.setItem('idMap', idMapStr)
+
   }
 
   function getPositionString(position) {
