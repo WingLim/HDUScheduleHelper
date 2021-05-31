@@ -1,5 +1,5 @@
 <script>
-  import { getPosition } from '../../lib/utils'
+  import { getPosition, saveToLocal } from '../../lib/utils'
   import { courses, idMap, searchResult, boolSaveToLocal } from '../../lib/store'
   import Item from './TableItem.svelte'
 
@@ -57,16 +57,6 @@
       $idMap.set(id, keys)
       $idMap = $idMap
       saveToLocal()
-    }
-  }
-
-  function saveToLocal() {
-    if (boolSaveToLocal) {
-      let coursesStr = JSON.stringify(Array.from($courses.entries()))
-      localStorage.setItem('courses', coursesStr)
-
-      let idMapStr = JSON.stringify(Array.from($idMap.entries()))
-      localStorage.setItem('idMap', idMapStr)
     }
   }
 
