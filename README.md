@@ -1,8 +1,8 @@
-# HDU Schedule Helper
+# 杭电课程助手
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/a1c545f8-837b-4f07-8dad-ea4f3c99093c/deploy-status)](https://app.netlify.com/sites/hduschedule/deploys)
 
-杭电课程助手
+帮助你快速排课，避免使用学校破旧接口来查询课程。
 
 课程搜索接口来自: [HDUCoursesAPI](https://github.com/WingLim/HDUCoursesAPI)
 ## 特性
