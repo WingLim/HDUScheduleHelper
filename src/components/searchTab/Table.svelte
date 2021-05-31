@@ -25,6 +25,22 @@
     infos.forEach(info => {
       let position = getPosition(info.start, info.end, info.weekday)
       let key = getPositionString(position)
+      let tmpStart = parseInt(key[0], 10)
+      let tmpEnd = parseInt(key[1], 10)
+      let count =  tmpEnd - tmpStart
+      if (count == 3) {
+        let tmpKey = String(tmpStart) + String(tmpEnd - 1) + key[2]
+        if ($courses.has(tmpKey)) {
+          conflictKeys.push(tmpKey)
+          conflict = true
+        }
+      } else if (count == 2) {
+        let tmpKey = String(tmpStart) + String(tmpEnd + 1) + key[2]
+        if ($courses.has(tmpKey)) {
+          conflictKeys.push(tmpKey)
+          conflict = true
+        }
+      }
       if ($courses.has(key)) {
         conflictKeys.push(key)
         conflict = true
