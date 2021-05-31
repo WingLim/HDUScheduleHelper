@@ -4,7 +4,7 @@
   import SearchCourses from './searchTab/Search.svelte'
   import Button from './elements/Button.svelte'
   import Settings from './Settings.svelte'
-  import { courses, idMap, weekdaysStore } from '../lib/store'
+  import { courses, idMap, weekdaysStore, boolSaveToLocal } from '../lib/store'
   import { times, weekdays, weekend } from '../lib/constant'
 
   let boolWeekendMode = false

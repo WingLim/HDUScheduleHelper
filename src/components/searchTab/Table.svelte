@@ -1,6 +1,6 @@
 <script>
   import { getPosition } from '../../lib/utils'
-  import { courses, idMap, searchResult } from '../../lib/store'
+  import { courses, idMap, searchResult, boolSaveToLocal } from '../../lib/store'
   import Item from './TableItem.svelte'
 
   let tableHeads = [
@@ -61,12 +61,13 @@
   }
 
   function saveToLocal() {
-    let coursesStr = JSON.stringify(Array.from($courses.entries()))
-    localStorage.setItem('courses', coursesStr)
+    if (boolSaveToLocal) {
+      let coursesStr = JSON.stringify(Array.from($courses.entries()))
+      localStorage.setItem('courses', coursesStr)
 
-    let idMapStr = JSON.stringify(Array.from($idMap.entries()))
-    localStorage.setItem('idMap', idMapStr)
-
+      let idMapStr = JSON.stringify(Array.from($idMap.entries()))
+      localStorage.setItem('idMap', idMapStr)
+    }
   }
 
   function getPositionString(position) {

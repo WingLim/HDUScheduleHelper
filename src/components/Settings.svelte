@@ -1,5 +1,6 @@
 <script>
   import { slide } from 'svelte/transition'
+  import { boolSaveToLocal } from '../lib/store'
 
   export let boolWeekendMode
   export let switchWeekendMode
@@ -15,6 +16,10 @@
       boolMenu = false
     }
   }
+
+  function switchLocalMode() {
+    $boolSaveToLocal = !$boolSaveToLocal
+  }
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -28,6 +33,11 @@
       <li class="hover:bg-gray-200">
         <div on:click={switchWeekendMode} class="checkbox {boolWeekendMode? 'checked' : ''}">
           周末模式
+        </div>
+      </li>
+      <li class="hover:bg-gray-200">
+        <div on:click={switchLocalMode} class="checkbox {$boolSaveToLocal? 'checked' : ''}">
+          保存至本地
         </div>
       </li>
     </ul>
