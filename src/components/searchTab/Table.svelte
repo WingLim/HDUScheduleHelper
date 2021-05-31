@@ -41,6 +41,11 @@
           conflict = true
         }
       }
+      let tmpKey = String(tmpStart - 1) + String(tmpEnd) + key[2]
+      if ($courses.has(tmpKey)) {
+        conflictKeys.push(tmpKey)
+        conflict = true
+      }
       if ($courses.has(key)) {
         conflictKeys.push(key)
         conflict = true
