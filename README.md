@@ -4,7 +4,19 @@
 
 杭电课程助手
 
+课程搜索接口来自: [HDUCoursesAPI](https://github.com/WingLim/HDUCoursesAPI)
+## 特性
+
+### 模糊搜索
+- 课程名
+- 上课地点
+- 教师名
+
+### 选择
+
+- 课程性质
+- 日期
+- 时间
 ## TODO
 
-- [ ] 课程时间(节数)
 - [ ] 获取课表
