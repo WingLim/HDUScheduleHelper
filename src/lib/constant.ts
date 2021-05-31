@@ -39,3 +39,14 @@ export const weekdayItems = [
   {value: '周六', label: '周六'},
   {value: '周日', label: '周日'},
 ]
+
+export const timeItems = [
+  {value: '08:05,09:40', label: '1,2节', group: '两节课'},
+  {value: '10:00,11:35', label: '3,4节', group: '两节课'},
+  {value: '13:30,14:15', label: '6,7节', group: '两节课'},
+  {value: '15:15,16:00', label: '8,9节', group: '两节课'},
+  {value: '18:30,20:05', label: '10,11节', group: '两节课'},
+  {value: '10:00,12:25', label: '3,4,5节', group: '三节课'},
+  {value: '13:30,16:00', label: '6,7,8节', group: '三节课'},
+  {value: '18:30,20:10', label: '10,11,12节', group: '三节课'},
+]

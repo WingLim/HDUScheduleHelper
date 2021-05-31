@@ -4,7 +4,7 @@
   import { slide } from 'svelte/transition'
   import { searchResult, boolMoreButton } from '../../lib/store'
   import { apiUrl } from '../../config'
-  import { propertyItems,weekdayItems  } from '../../lib/constant'
+  import { propertyItems, weekdayItems, timeItems  } from '../../lib/constant'
 
   export let page
 
@@ -38,6 +38,15 @@
     updateParamsMap()
   }
 
+  function handleTimeSelect(event) {
+    paramsMap.set('time', event.detail.value)
+    updateParamsMap()
+  }
+  function handleTimeClear(event) {
+    paramsMap.delete('time')
+    updateParamsMap()
+  }
+
   function buildRequestUrl() {
     let params = ''
     if (title) {
@@ -54,6 +63,9 @@
     }
     if (paramsMap.has('weekday')) {
       params += '&weekday=' + paramsMap.get('weekday')
+    }
+    if (paramsMap.has('time')) {
+      params += '&time=' + paramsMap.get('time')
     }
     if (page) {
       params += '&page=' + page 
@@ -113,21 +125,25 @@
     <div class="flex flex-row">
       <div class="themed flex flex-grow flex-col">
         <label for="">课程性质</label>
-        <Select items={propertyItems} selectedValue='学科必修' {groupBy} on:select={handlePropertySelect} on:clear={handlePropertyClear} />
+        <Select items={propertyItems} {groupBy} placeholder="下拉选择..." on:select={handlePropertySelect} on:clear={handlePropertyClear} />
       </div>
-      <div class="themed flex flex-col ml-4">
+      <div class="themed flex flex-grow flex-col ml-4">
         <label for="">日期</label>
-        <Select items={weekdayItems} selectedValue='周一' on:select={handleWeekdaySelect} on:clear={handleWeekdayClear} />
+        <Select items={weekdayItems} placeholder="下拉选择..." on:select={handleWeekdaySelect} on:clear={handleWeekdayClear} />
+      </div>
+      <div class="themed flex flex-grow flex-col ml-4">
+        <label for="">时间</label>
+        <Select items={timeItems} {groupBy} placeholder="下拉选择..." on:select={handleTimeSelect} on:clear={handleTimeClear} />
       </div>
     </div>
     <div class="flex flex-row">
       <div class="flex flex-col flex-grow">
         <label for="">上课地点</label>
-        <input type="text" class="searchInput" bind:value={location} on:input={searchCourse} placeholder="6教">
+        <input type="text" class="searchInput" bind:value={location} on:input={searchCourse} placeholder="输入...">
       </div>
       <div class="flex flex-col ml-4">
         <label for="">教师</label>
-        <input type="text" class="searchInput" bind:value={teacher} on:input={searchCourse} placeholder="...">
+        <input type="text" class="searchInput" bind:value={teacher} on:input={searchCourse} placeholder="输入...">
       </div>
     </div>
   </div>
