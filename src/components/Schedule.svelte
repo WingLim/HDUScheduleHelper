@@ -4,10 +4,9 @@
   import SearchCourses from './searchTab/Search.svelte'
   import Button from './elements/Button.svelte'
   import Settings from './Settings.svelte'
-  import { courses, idMap, weekdaysStore, boolSaveToLocal } from '../lib/store'
-  import { times, weekdays, weekend } from '../lib/constant'
+  import { courses, idMap, weekdaysStore, boolWeekendMode } from '../lib/store'
+  import { times } from '../lib/constant'
 
-  let boolWeekendMode = false
   let boolSearch = true
   function toggleSearch() {
     boolSearch = !boolSearch
@@ -16,9 +15,8 @@
     boolSearch = false
   }
 
-  function readConfigAndSet() {
-    boolWeekendMode = localStorage.getItem('weekendMode') == 'true'
-    setWeekendMode()
+  function readConfig() {
+    $boolWeekendMode = localStorage.getItem('weekendMode') == 'true'
 
     let coursesStr = localStorage.getItem('courses')
     $courses = new Map(JSON.parse(coursesStr))
@@ -27,22 +25,8 @@
     $idMap = new Map(JSON.parse(idMapStr))
   }
 
-  function switchWeekendMode() {
-    boolWeekendMode = !boolWeekendMode
-    localStorage.setItem('weekendMode', String(boolWeekendMode))
-    setWeekendMode()
-  }
-
-  function setWeekendMode() {
-    if (boolWeekendMode) {
-      $weekdaysStore = [...$weekdaysStore, ...weekend]
-    } else {
-      $weekdaysStore = weekdays
-    }
-  }
-
   onMount(() => {
-    readConfigAndSet()
+    readConfig()
   })
 </script>
 
@@ -60,10 +44,10 @@
         </svg>
         搜索课程
       </Button>
-      <Settings {switchWeekendMode} {boolWeekendMode} />
+      <Settings />
     </div>
   </div>
-  <div class="grid {boolWeekendMode ? 'weekendMode' : 'weekdayMode'} grid-rows-12 w-full">
+  <div class="grid {$boolWeekendMode ? 'weekendMode' : 'weekdayMode'} grid-rows-12 w-full">
     <div class="col-start-1 row-start-1 scheduleTableBorder"></div>
     {#each times as time, i}
     <div id="time-{i+1}" class="odd:bg-gray-100 p-y-1 col-start-1">

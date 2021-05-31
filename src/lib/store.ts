@@ -10,3 +10,4 @@ export let boolMoreButton = writable(true)
 export let weekdaysStore = writable(weekdays)
 
 export let boolSaveToLocal = writable(true)
+export let boolWeekendMode = writable(false)
