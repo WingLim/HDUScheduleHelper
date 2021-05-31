@@ -24,8 +24,8 @@
   </button>
   {#if boolMenu}
   <div transition:slide class="settings-menu">
-    <ul class="list-none m-0 p-0">
-      <li class="cursor-pointer hover:bg-gray-200">
+    <ul>
+      <li class="hover:bg-gray-200">
         <div on:click={switchWeekendMode} class="checkbox {boolWeekendMode? 'checked' : ''}">
           周末模式
         </div>
@@ -36,6 +36,12 @@
 </div>
 
 <style>
+  ul {
+    @apply list-none m-0 p-0;
+  }
+  li {
+    @apply cursor-pointer;
+  }
   .settings-button {
     @apply bg-white cursor-pointer;
     @apply w-10 h-10 flex items-center justify-center;
