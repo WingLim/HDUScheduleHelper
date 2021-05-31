@@ -2,9 +2,11 @@
   import Course from './course/CourseItem.svelte'
   import SearchCourses from './searchTab/Search.svelte'
   import Button from './elements/Button.svelte'
-  import { courses } from '../lib/store'
-  import { times, weekdays } from '../lib/constant'
+  import Settings from './Settings.svelte'
+  import { courses, weekdaysStore } from '../lib/store'
+  import { times, weekdays, weekend } from '../lib/constant'
 
+  let boolWeekendMode = false
   let boolSearch = true
   function toggleSearch() {
     boolSearch = !boolSearch
@@ -13,13 +15,22 @@
   function hideSearch() {
     boolSearch = false
   }
+
+  function switchWeekendMode() {
+    boolWeekendMode = !boolWeekendMode
+    if (boolWeekendMode) {
+      $weekdaysStore = [...$weekdaysStore, ...weekend]
+    } else {
+      $weekdaysStore = weekdays
+    }
+  }
 </script>
 
 <div class="{boolSearch ? 'showSearchBarFlex': ''}" >
   <div class="main {boolSearch ? 'showSearchBarWidth': ''}">
   <div class="flex justify-between px-5 items-center">
     <h1 class="m-0">HDU 课程助手</h1>
-    <div>
+    <div class="flex items-center gap-1">
       <Button clickFn={toggleSearch} type="primary">
         <svg class="icon mr-1" viewBox="0 0 24 24">
           <g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" stroke="currentColor" fill="none" stroke-miterlimit="10">
@@ -29,9 +40,10 @@
         </svg>
         搜索课程
       </Button>
+      <Settings {switchWeekendMode} {boolWeekendMode} />
     </div>
   </div>
-  <div class="grid grid-cols-8 grid-rows-12 w-full">
+  <div class="grid {boolWeekendMode ? 'weekendMode' : 'weekdayMode'} grid-rows-12 w-full">
     <div class="col-start-1 row-start-1 scheduleTableBorder"></div>
     {#each times as time, i}
     <div id="time-{i+1}" class="odd:bg-gray-100 p-y-1 col-start-1">
@@ -41,7 +53,7 @@
     </div>
     {/each}
     
-    {#each weekdays as weekday, i}
+    {#each $weekdaysStore as weekday, i}
     <div class="row-start-1 col-start-{i + 2} flex items-center justify-center scheduleTableBorder">
       <p class="m-0 text-xl">{weekday}</p>
     </div>
@@ -58,6 +70,12 @@
 </div>
 
 <style>
+  .weekdayMode {
+    @apply grid-cols-6;
+  }
+  .weekendMode {
+    @apply grid-cols-8;
+  }
   .scheduleTableBorder {
     @apply border-gray-300 border-0 border-b border-solid;
   }

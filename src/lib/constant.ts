@@ -1,4 +1,5 @@
-export const weekdays = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+export const weekdays = ['周一', '周二', '周三', '周四', '周五']
+export const weekend = ['周六', '周日']
 
 export const times = [
   {start: '08:05', end: '08:50'},
