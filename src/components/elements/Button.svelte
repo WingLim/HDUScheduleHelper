@@ -1,6 +1,7 @@
 <script>
   import { createEventDispatcher } from 'svelte'
   export let type = ''
+  export let loading = false
   export let className = ''
   export let content = ''
 
@@ -13,6 +14,9 @@
 
 <button on:click={handleClick} class="{type} {className}">
   <slot />
+  {#if loading}
+  <svg class="icon mr-1 animate-spin" aria-hidden="true" viewBox="0 0 16 16"><title>Loading</title><g stroke-width="1" fill="currentColor" stroke="currentColor"><path d="M.5,8a7.5,7.5,0,1,1,1.91,5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
+  {/if}
   {content}
 </button>
 
