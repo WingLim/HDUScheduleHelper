@@ -52,10 +52,10 @@
       <Settings />
     </div>
   </div>
-  <div class="grid {$boolWeekendMode ? 'weekendMode' : 'weekdayMode'} grid-rows-12 w-full">
+  <div class="schedule {$boolWeekendMode ? 'weekendMode' : 'weekdayMode'}">
     <div class="col-start-1 row-start-1 scheduleTableBorder"></div>
     {#each times as time, i}
-    <div id="time-{i+1}" class="odd:bg-gray-100 p-y-1 col-start-1">
+    <div class="odd:bg-gray-100 p-y-1 col-start-1">
       <p class="m-0 text-xl">{i+1}</p>
       <p class="m-0 text-sm text-gray-400">{time.start}</p>
       <p class="m-0 text-sm text-gray-400">{time.end}</p>
@@ -79,6 +79,10 @@
 </div>
 
 <style>
+  .schedule {
+    @apply grid w-full;
+    grid-template-rows: repeat(12, minmax(3rem, 6rem));
+  }
   .weekdayMode {
     @apply grid-cols-6;
   }
