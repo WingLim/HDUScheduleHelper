@@ -1,4 +1,4 @@
-<script>
+<script lang='ts'>
   import { onMount } from 'svelte'
   import Course from './course/CourseItem.svelte'
   import SearchCourses from './searchTab/Search.svelte'
@@ -19,7 +19,9 @@
   function readConfig() {
     $boolWeekendMode = localStorage.getItem('weekendMode') == 'true'
     if ($boolWeekendMode) {
-      $weekdaysStore = [...$weekdaysStore, ...weekend]
+      if ($weekdaysStore.length < 7) {
+        $weekdaysStore = [...$weekdaysStore, ...weekend]
+      }
     }
 
     let coursesStr = localStorage.getItem('courses')
@@ -74,7 +76,7 @@
   </div>
   </div>
   <div class="searchBar {boolSearch ? 'searchBarWidth': ''}">
-    <SearchCourses shown={boolSearch} hideFn={() => hideSearch()} />
+    <SearchCourses shown={boolSearch} on:click={hideSearch} />
   </div>
 </div>
 

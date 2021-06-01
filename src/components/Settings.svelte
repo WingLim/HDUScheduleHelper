@@ -1,4 +1,4 @@
-<script>
+<script lang='ts'>
   import { slide } from 'svelte/transition'
   import { onMount } from 'svelte'
   import { boolSaveToLocal, boolWeekendMode, weekdaysStore } from '../lib/store'
@@ -10,7 +10,7 @@
     boolMenu = !boolMenu
   }
 
-  function handleKeydown(event) {
+  function handleKeydown(event: KeyboardEvent) {
     let key = event.key
     if (key == 'Escape') {
       boolMenu = false
@@ -34,10 +34,6 @@
   function switchLocalMode() {
     $boolSaveToLocal = !$boolSaveToLocal
   }
-
-  onMount(() => {
-    setWeekendMode()
-  })
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
