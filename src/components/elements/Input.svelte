@@ -1,16 +1,16 @@
-<script>
+<script lang='ts'>
   import { createEventDispatcher } from 'svelte'
-  export let placeholder = ""
-  export let value = ""
+  export let placeholder = ''
+  export let value = ''
 
   const dispatch = createEventDispatcher()
 
   function handleInput() {
-    dispatch("input", value)
+    dispatch('input', value)
   }
 </script>
 
-<input type="text" {placeholder} bind:value={value} on:input={handleInput}>
+<input type='text' {placeholder} bind:value={value} on:input={handleInput}>
 
 <style>
   input {

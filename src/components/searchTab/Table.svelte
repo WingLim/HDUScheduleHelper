@@ -1,4 +1,4 @@
-<script>
+<script lang='ts'>
   import { addCourse } from '../../lib/utils'
   import { searchResult } from '../../lib/store'
   import Item from './TableItem.svelte'
@@ -28,9 +28,9 @@
     {#each $searchResult as item}
     {#if item.status == '已开'}
     {#if item.time_info.length == 1}
-      <Item {item} {addCourse}/>
+      <Item {item}/>
     {:else}
-      <Item {item} {addCourse} count={2}/>
+      <Item {item} count={2}/>
     {/if}
     {/if}
     {/each}

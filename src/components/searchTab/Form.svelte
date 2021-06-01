@@ -1,4 +1,4 @@
-<script>
+<script lang='ts'>
   import Select from 'svelte-select'
   import Button from '../elements/Button.svelte'
   import Input from '../elements/Input.svelte'
@@ -7,43 +7,43 @@
   import { apiUrl } from '../../config'
   import { propertyItems, weekdayItems, timeItems  } from '../../lib/constant'
 
-  export let page
+  export let page: number
 
-  let title
-  let location
-  let teacher
+  let title: string
+  let location: string
+  let teacher: string
   let boolAdvance = false
   let paramsMap = new Map()
-  const groupBy = (item) => item.group
+  const groupBy = (item: any) => item.group
 
   // 重新赋值 paramsMap, 触发 svelte 更新
   function updateParamsMap() {
     paramsMap = paramsMap
   }
 
-  function handlePropertySelect(event) {
+  function handlePropertySelect(event: any) {
     paramsMap.set('property', event.detail.value)
     updateParamsMap()
   }
-  function handlePropertyClear(event) {
+  function handlePropertyClear() {
     paramsMap.delete('property')
     updateParamsMap()
   }
 
-  function handleWeekdaySelect(event) {
+  function handleWeekdaySelect(event: any) {
     paramsMap.set('weekday', event.detail.value)
     updateParamsMap()
   }
-  function handleWeekdayClear(event) {
+  function handleWeekdayClear() {
     paramsMap.delete('weekday')
     updateParamsMap()
   }
 
-  function handleTimeSelect(event) {
+  function handleTimeSelect(event: any) {
     paramsMap.set('time', event.detail.value)
     updateParamsMap()
   }
-  function handleTimeClear(event) {
+  function handleTimeClear() {
     paramsMap.delete('time')
     updateParamsMap()
   }

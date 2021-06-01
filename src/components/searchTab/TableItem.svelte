@@ -1,10 +1,10 @@
-<script>
+<script lang='ts'>
   import Button from '../elements/Button.svelte'
   import { onMount } from 'svelte'
   import { slide } from 'svelte/transition'
+  import { addCourse } from '../../lib/utils'
 
-  export let item
-  export let addCourse
+  export let item: any
   export let count = 1
 
   let boolDetail = false
