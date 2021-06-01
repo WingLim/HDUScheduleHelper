@@ -116,7 +116,7 @@
   <div class="flex gap-1 flex-row mb-4">
     <Input placeholder="课程名" bind:value={title} on:input={searchCourse} />
     <Button type="primary">搜索</Button>
-    <Button type="{boolAdvance ? 'primary' : ''}" clickFn="{() => {boolAdvance = !boolAdvance}}">
+    <Button type="{boolAdvance ? 'primary' : ''}" on:click="{() => {boolAdvance = !boolAdvance}}">
       高级搜索
     </Button>
   </div>

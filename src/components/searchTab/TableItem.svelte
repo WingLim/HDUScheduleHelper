@@ -39,7 +39,7 @@
     </div>
   </td>
   <td {rowspan}>
-    <Button className="m-2" clickFn={() => addCourse(item)}>选择</Button>
+    <Button className="m-2" on:click={() => addCourse(item)}>选择</Button>
   </td>
 </tr>
 {#if count == 2}

@@ -1,10 +1,16 @@
 <script>
-  export let clickFn = undefined
+  import { createEventDispatcher } from 'svelte'
   export let type = ''
   export let className = ''
+
+  const dispatch = createEventDispatcher()
+
+  function handleClick() {
+    dispatch('click')
+  }
 </script>
 
-<button on:click={clickFn} class="{type} {className}">
+<button on:click={handleClick} class="{type} {className}">
   <slot />
 </button>
 
