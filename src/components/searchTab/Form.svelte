@@ -1,6 +1,7 @@
 <script>
   import Select from 'svelte-select'
   import Button from '../elements/Button.svelte'
+  import Input from '../elements/Input.svelte'
   import { slide } from 'svelte/transition'
   import { searchResult, boolMoreButton } from '../../lib/store'
   import { apiUrl } from '../../config'
@@ -113,11 +114,9 @@
 
 <form on:submit|preventDefault={searchCourse} >
   <div class="flex gap-1 flex-row mb-4">
-    <input class="searchInput" type="text" placeholder="课程名" bind:value={title} on:input={searchCourse}>
-    <Button type="primary">搜索</Button>
-    <Button type="{boolAdvance ? 'primary' : ''}" clickFn="{() => {boolAdvance = !boolAdvance}}">
-      高级搜索
-    </Button>
+    <Input placeholder="课程名" bind:value={title} on:input={searchCourse} />
+    <Button type="primary" content="搜索" />
+    <Button type="{boolAdvance ? 'primary' : ''}" on:click="{() => {boolAdvance = !boolAdvance}}" content="高级搜索" />
   </div>
   
   {#if boolAdvance}

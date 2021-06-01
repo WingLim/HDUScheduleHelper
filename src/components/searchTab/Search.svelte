@@ -23,9 +23,7 @@
         <Table />
       </div>
       {#if $boolMoreButton}
-      <Button className="mt-4" clickFn={showMore}>
-        查看更多
-      </Button>
+      <Button className="mt-4" on:click={showMore} content="查看更多" />
       {/if}
     </div>
   </div>

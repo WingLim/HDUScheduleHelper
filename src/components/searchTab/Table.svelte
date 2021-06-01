@@ -1,6 +1,6 @@
 <script>
-  import { getPosition, saveToLocal } from '../../lib/utils'
-  import { courses, idMap, searchResult, boolSaveToLocal } from '../../lib/store'
+  import { addCourse } from '../../lib/utils'
+  import { searchResult } from '../../lib/store'
   import Item from './TableItem.svelte'
 
   let tableHeads = [
@@ -10,84 +10,6 @@
     '地点',
     '动作'
   ]
-
-  function sleep(ms) {
-		return new Promise(resolve => setTimeout(resolve, ms));
-	}
-
-  function addCourse(course) {
-    let id = course.class_id
-    let infos = course.time_info
-
-    let conflict = false
-    var conflictKeys = []
-    
-    infos.forEach(info => {
-      let position = getPosition(info.start, info.end, info.weekday)
-      let key = getPositionString(position)
-      let tmpStart = parseInt(key[0], 10)
-      let tmpEnd = parseInt(key[1], 10)
-      let count =  tmpEnd - tmpStart
-      if (count == 3) {
-        let tmpKey = String(tmpStart) + String(tmpEnd - 1) + key[2]
-        if ($courses.has(tmpKey)) {
-          conflictKeys.push(tmpKey)
-          conflict = true
-        }
-      } else if (count == 2) {
-        let tmpKey = String(tmpStart) + String(tmpEnd + 1) + key[2]
-        if ($courses.has(tmpKey)) {
-          conflictKeys.push(tmpKey)
-          conflict = true
-        }
-      }
-      let tmpKey = String(tmpStart - 1) + String(tmpEnd) + key[2]
-      if ($courses.has(tmpKey)) {
-        conflictKeys.push(tmpKey)
-        conflict = true
-      }
-      if ($courses.has(key)) {
-        conflictKeys.push(key)
-        conflict = true
-      }
-    })
-
-    if (conflict) {
-      conflictKeys.forEach(key => {
-        $courses.get(key).warn = true
-        $courses = $courses
-
-        sleep(500).then(() => {
-          if ($courses.has(key)) {
-            $courses.get(key).warn = false
-            $courses = $courses
-          }
-        })
-      })
-      
-    } else {
-      let keys = []
-      infos.forEach(info => {
-        let position = getPosition(info.start, info.end, info.weekday)
-        let key = getPositionString(position)
-        keys.push(key)
-        let options = {id: id, course: course, timeInfo: info, position: position, warn: false}
-        $courses.set(key, options)
-        $courses = $courses
-      })
-      $idMap.set(id, keys)
-      $idMap = $idMap
-      saveToLocal()
-    }
-  }
-
-  function getPositionString(position) {
-    let str = ''
-    str += position.row_start
-    str += position.row_end
-    str += position.col_start
-    return str
-  }
 </script>
 
 <table class="w-full">

@@ -4,6 +4,7 @@
   import SearchCourses from './searchTab/Search.svelte'
   import Button from './elements/Button.svelte'
   import Settings from './Settings.svelte'
+  import GetSchedule from '../components/GetSchedule.svelte'
   import { courses, idMap, weekdaysStore, boolWeekendMode } from '../lib/store'
   import { times, weekend } from '../lib/constant'
 
@@ -38,7 +39,8 @@
   <div class="flex justify-between px-5 items-center">
     <h1 class="m-0">HDU 课程助手</h1>
     <div class="flex items-center gap-1">
-      <Button clickFn={toggleSearch} type="primary">
+      <GetSchedule />
+      <Button on:click={toggleSearch} type="primary">
         <svg class="icon mr-1" viewBox="0 0 24 24">
           <g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" stroke="currentColor" fill="none" stroke-miterlimit="10">
               <line x1="22" y1="22" x2="15.656" y2="15.656"></line>
@@ -50,10 +52,10 @@
       <Settings />
     </div>
   </div>
-  <div class="grid {$boolWeekendMode ? 'weekendMode' : 'weekdayMode'} grid-rows-12 w-full">
+  <div class="schedule {$boolWeekendMode ? 'weekendMode' : 'weekdayMode'}">
     <div class="col-start-1 row-start-1 scheduleTableBorder"></div>
     {#each times as time, i}
-    <div id="time-{i+1}" class="odd:bg-gray-100 p-y-1 col-start-1">
+    <div class="odd:bg-gray-100 p-y-1 col-start-1">
       <p class="m-0 text-xl">{i+1}</p>
       <p class="m-0 text-sm text-gray-400">{time.start}</p>
       <p class="m-0 text-sm text-gray-400">{time.end}</p>
@@ -77,6 +79,10 @@
 </div>
 
 <style>
+  .schedule {
+    @apply grid w-full;
+    grid-template-rows: repeat(12, minmax(3rem, 6rem));
+  }
   .weekdayMode {
     @apply grid-cols-6;
   }
