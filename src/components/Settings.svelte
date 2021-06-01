@@ -1,9 +1,11 @@
 <script lang='ts'>
-  import { slide } from 'svelte/transition'
+  import Checkbox from './elements/Checkbox.svelte'
   import { onMount } from 'svelte'
+  import { slide } from 'svelte/transition'
   import { boolSaveToLocal, boolWeekendMode, weekdaysStore } from '../lib/store'
   import { weekdays, weekend } from '../lib/constant'
 
+  let defaultSearch: boolean
 
   let boolMenu = false
   function toggleMenu() {
@@ -34,6 +36,21 @@
   function switchLocalMode() {
     $boolSaveToLocal = !$boolSaveToLocal
   }
+
+  function switchSearchBar() {
+    defaultSearch = localStorage.getItem('defaultSearch') == 'true'
+    defaultSearch = !defaultSearch
+    let value: string
+    if (defaultSearch) {
+      value = 'true'
+    } else {
+      value = 'false'
+    }
+    localStorage.setItem('defaultSearch', value)
+  }
+  onMount(() => {
+    defaultSearch = localStorage.getItem('defaultSearch') == 'true'
+  })
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -45,14 +62,13 @@
   <div transition:slide class="settings-menu">
     <ul>
       <li class="hover:bg-gray-200">
-        <div on:click={switchWeekendMode} class="checkbox {$boolWeekendMode? 'checked' : ''}">
-          周末模式
-        </div>
+        <Checkbox on:click={switchWeekendMode} bind:checked={$boolWeekendMode} content="周末模式" />
       </li>
       <li class="hover:bg-gray-200">
-        <div on:click={switchLocalMode} class="checkbox {$boolSaveToLocal? 'checked' : ''}">
-          保存至本地
-        </div>
+        <Checkbox on:click={switchLocalMode} bind:checked={$boolSaveToLocal} content="保存至本地" />
+      </li>
+      <li class="hover:bg-gray-200">
+        <Checkbox on:click={switchSearchBar} bind:checked={defaultSearch} content="默认开启搜索栏" />
       </li>
     </ul>
   </div>
@@ -77,28 +93,5 @@
   }
   .settings-menu {
     @apply absolute min-w-50 right-0 top-[120%] bg-white py-2 shadow-md rounded-md;
-  }
-  .checkbox {
-    @apply px-4 py-2 flex items-center;
-  }
-  
-  .checkbox::before {
-    @apply w-4 h-4 mr-1;
-    @apply border-gray-300 border-2 border-solid rounded-md;
-    @apply inline-block relative;
-    @apply bg-white transition;
-    content: '';
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-  .checkbox:hover::before {
-    @apply border-gray-400;
-  }
-  .checked:hover::before {
-    @apply border-blue-600;
-  }
-  .checked::before {
-    @apply border-blue-600 bg-blue-600;
-    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMicgaGVpZ2h0PScxMicgdmlld0JveD0nMCAwIDEyIDEyJz48cG9seWxpbmUgcG9pbnRzPScxIDYuNSA0IDkuNSAxMSAyLjUnIGZpbGw9J25vbmUnIHN0cm9rZT0nI0ZGRkZGRicgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJyBzdHJva2UtbGluZWpvaW49J3JvdW5kJyBzdHJva2Utd2lkdGg9JzInLz48L3N2Zz4=");
   }
 </style>

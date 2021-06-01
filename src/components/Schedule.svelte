@@ -5,15 +5,11 @@
   import Button from './elements/Button.svelte'
   import Settings from './Settings.svelte'
   import GetSchedule from '../components/GetSchedule.svelte'
-  import { courses, idMap, weekdaysStore, boolWeekendMode } from '../lib/store'
+  import { courses, idMap, weekdaysStore, boolWeekendMode, boolSearchBar } from '../lib/store'
   import { times, weekend } from '../lib/constant'
 
-  let boolSearch = true
   function toggleSearch() {
-    boolSearch = !boolSearch
-  }
-  function hideSearch() {
-    boolSearch = false
+    $boolSearchBar = !$boolSearchBar
   }
 
   function readConfig() {
@@ -23,6 +19,8 @@
         $weekdaysStore = [...$weekdaysStore, ...weekend]
       }
     }
+
+    $boolSearchBar = localStorage.getItem('defaultSearch') == 'true'
 
     let coursesStr = localStorage.getItem('courses')
     $courses = new Map(JSON.parse(coursesStr))
@@ -36,8 +34,8 @@
   })
 </script>
 
-<div class="{boolSearch ? 'showSearchBarFlex': ''}" >
-  <div class="main {boolSearch ? 'showSearchBarWidth': ''}">
+<div class="{$boolSearchBar ? 'showSearchBarFlex': ''}" >
+  <div class="main {$boolSearchBar ? 'showSearchBarWidth': ''}">
   <div class="flex justify-between px-5 items-center">
     <h1 class="m-0">HDU 课程助手</h1>
     <div class="flex items-center gap-1">
@@ -75,8 +73,8 @@
     {/each}
   </div>
   </div>
-  <div class="searchBar {boolSearch ? 'searchBarWidth': ''}">
-    <SearchCourses shown={boolSearch} on:click={hideSearch} />
+  <div class="searchBar {$boolSearchBar ? 'searchBarWidth': ''}">
+    <SearchCourses />
   </div>
 </div>
 

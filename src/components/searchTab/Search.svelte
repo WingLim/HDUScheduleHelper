@@ -1,18 +1,9 @@
 <script>
-  import { createEventDispatcher } from 'svelte'
   import Table from './Table.svelte'
   import Form from './Form.svelte'
   import Header from './Header.svelte'
   import Button from '../elements/Button.svelte'
-  import { boolMoreButton } from '../../lib/store'
-  
-  const dispatch = createEventDispatcher()
-
-  export let shown
-
-  function handleClick() {
-    dispatch('click')
-  }
+  import { boolMoreButton, boolSearchBar } from '../../lib/store'
 
   let page = 0
   function showMore() {
@@ -20,9 +11,9 @@
   }
 </script>
 
-{#if shown == true}
+{#if $boolSearchBar}
   <div class="h-full bg-white shadow-xl flex flex-col">
-    <Header on:click={handleClick}/>
+    <Header />
     <div class="py-4 px-5">
       <Form {page} />
       <div class="pt-2 max-h-[90vh] overflow-auto">

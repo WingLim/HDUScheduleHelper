@@ -1,15 +1,14 @@
 <script>
-  import { createEventDispatcher } from 'svelte'
-  const dispatch = createEventDispatcher()
+  import { boolSearchBar } from '../../lib/store'
 
-  function handleClick() {
-    dispatch('click')
+  function hideSearchBar() {
+    $boolSearchBar =  false
   }
 </script>
 
 <header>
   <h2 class="m-0">搜索课程</h2>
-  <button on:click={handleClick} class="closeBtn hover:shadow-xl" >
+  <button on:click={hideSearchBar} class="closeBtn hover:shadow-xl" >
     <svg class="icon w-5 h-5" viewBox="0 0 16 16">
       <title>关闭搜索</title>
       <g stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10">
