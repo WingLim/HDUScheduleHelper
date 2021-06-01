@@ -2,6 +2,7 @@
   import { createEventDispatcher } from 'svelte'
   export let type = ''
   export let className = ''
+  export let content = ''
 
   const dispatch = createEventDispatcher()
 
@@ -12,6 +13,7 @@
 
 <button on:click={handleClick} class="{type} {className}">
   <slot />
+  {content}
 </button>
 
 <style>
