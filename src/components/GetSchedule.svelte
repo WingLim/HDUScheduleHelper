@@ -131,6 +131,13 @@
     })
   }
 
+  function handleKeydown(event: KeyboardEvent) {
+    let key = event.key
+    if (key == 'Escape') {
+      boolMenu = false
+    }
+  }
+
   onMount(() => {
     id = localStorage.getItem('id')
     name = localStorage.getItem('name')
@@ -138,6 +145,7 @@
   })
 </script>
 
+<svelte:window on:keydown={handleKeydown} />
 <div class="relative">
   <Button on:click={toggleMenu} content="获取课表" />
   {#if boolMenu}
