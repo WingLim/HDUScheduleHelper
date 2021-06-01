@@ -7,6 +7,18 @@
 课程搜索接口来自: [HDUCoursesAPI](https://github.com/WingLim/HDUCoursesAPI)
 ## 特性
 
+### 获取课表
+
+**注意**: Session 需要手动获取
+
+登陆并打开 [选课系统](http://jxgl.hdu.edu.cn/), 按 **F12** 打开开发者工具。
+
+点击 **Application**, 选择 **Cookies**。
+
+选择 **http://jxgl.hdu.edu.cn**, 复制 `ASP.NET_SessionId` 的 `Value`
+
+![](https://cdn.jsdelivr.net/gh/WingLim/assets@master/images/20210602000658.png)
+
 ### 模糊搜索
 - 课程名
 - 上课地点
@@ -23,5 +35,3 @@
 - 周末模式
 - 保存至本地（默认开启）
 ## TODO
-
-- [ ] 获取课表
