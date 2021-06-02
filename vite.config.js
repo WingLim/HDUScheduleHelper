@@ -1,9 +1,6 @@
 import { defineConfig } from 'vite'
 import svelte from '@sveltejs/vite-plugin-svelte'
-import autopreprocess from "svelte-preprocess";
-import { windi } from 'svelte-windicss-preprocess';
-
-const preprocess = autopreprocess({})
+const { preprocess } = require('./svelte.config')
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -12,10 +9,7 @@ export default defineConfig({
   },
   plugins: [
     svelte({
-      preprocess: [
-        preprocess,
-        windi({}),
-      ]
+      preprocess: preprocess
     }),
   ]
 })

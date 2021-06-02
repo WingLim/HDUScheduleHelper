@@ -1,8 +1,19 @@
-import { defineConfig } from 'windicss/helpers'
+const { defineConfig } = require('windicss/helpers')
 
-export default defineConfig({
+module.exports =  defineConfig({
   extract: {
     include: ['./src/**/*.{svelte}', './index.html'],
     exclude: ['node_modules', '.git']
+  },
+  theme: {
+    screens: {
+      xs: '380px',
+      sm: '640px'
+    },
+    extend: {
+      transitionProperty: {
+        width: 'width'
+      }
+    }
   }
 })
