@@ -1,7 +1,7 @@
 {
   "name": "hduschedulehelper",
   "description": "A HDU schedule arrangement helper",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "author": "WingLim",
   "license": "MIT",
   "scripts": {
