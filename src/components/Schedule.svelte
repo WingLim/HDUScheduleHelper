@@ -93,6 +93,14 @@
   .weekendMode {
     grid-template-columns: 8rem repeat(7, minmax(0, 1fr));
   }
+  @screen <xs {
+    .weekdayMode {
+    grid-template-columns: 4rem repeat(5, minmax(0, 1fr));
+    }
+    .weekendMode {
+      grid-template-columns: 4rem repeat(7, minmax(0, 1fr));
+    }
+  }
   .scheduleTableBorder {
     @apply border-gray-300 border-0 border-b border-solid;
   }
