@@ -7,6 +7,7 @@
   import GetSchedule from '../components/GetSchedule.svelte'
   import { courses, idMap, weekdaysStore, boolWeekendMode, boolSearchBar } from '../lib/store'
   import { times, weekend } from '../lib/constant'
+  import logo from '../assets/logo.png'
 
   function toggleSearch() {
     $boolSearchBar = !$boolSearchBar
@@ -37,7 +38,10 @@
 <div class="{$boolSearchBar ? 'showSearchBarFlex': ''}" >
   <div class="main {$boolSearchBar ? 'showSearchBarWidth': ''}">
   <div class="flex justify-between px-5 items-center <sm:px-0">
-    <h1 class="m-0 <xs:text-base <sm:text-lg">HDU 课程助手</h1>
+    <h1 class="m-0 flex text-light-blue-600 <xs:text-base <sm:text-lg">
+      <img class="w-10 h-10 <xs:w-5 <xs:h-5" src={logo} alt="" />
+      HDU 课程助手
+    </h1>
     <div class="flex items-center gap-1">
       <GetSchedule />
       <Button on:click={toggleSearch} type="primary">
