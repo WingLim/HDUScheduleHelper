@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import svelte from '@sveltejs/vite-plugin-svelte'
-const { preprocess } = require('./svelte.config')
+import { preprocess } from './svelte.config'
 
 // https://vitejs.dev/config/
 export default defineConfig({
