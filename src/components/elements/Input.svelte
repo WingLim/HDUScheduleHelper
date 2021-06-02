@@ -14,7 +14,7 @@
 
 <style>
   input {
-    @apply p-2 rounded-md border-2 outline-none border-solid text-base flex-grow-[1];
+    @apply p-2 rounded-md border-2 outline-none border-solid text-base flex-grow;
     border-color: rgba(209, 213, 219);
   }
   input:hover {

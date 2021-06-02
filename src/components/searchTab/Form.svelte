@@ -135,14 +135,14 @@
         <Select items={timeItems} {groupBy} placeholder="下拉选择..." on:select={handleTimeSelect} on:clear={handleTimeClear} />
       </div>
     </div>
-    <div class="flex flex-row">
-      <div class="flex flex-col flex-grow">
+    <div class="grid grid-cols-2 gap-2">
+      <div class="flex flex-col flex-shrink-0">
         <label for="">上课地点</label>
-        <input type="text" class="searchInput" bind:value={location} on:input={searchCourse} placeholder="输入...">
+        <Input placeholder="输入..." bind:value={location} on:input={searchCourse} />
       </div>
-      <div class="flex flex-col ml-4">
+      <div class="flex flex-col flex-shrink-0">
         <label for="">教师</label>
-        <input type="text" class="searchInput" bind:value={teacher} on:input={searchCourse} placeholder="输入...">
+        <Input placeholder="输入..." bind:value={teacher} on:input={searchCourse} />
       </div>
     </div>
   </div>
@@ -150,16 +150,6 @@
 </form>
 
 <style>
-  .searchInput {
-    @apply p-2 rounded-md border-2 outline-none border-solid text-base flex-grow-[1];
-    border-color: rgba(209, 213, 219);
-  }
-  .searchInput:hover {
-    @apply border-gray-400;
-  }
-  .searchInput:focus {
-    @apply border-blue-600;
-  }
   .themed {
     --border: 2px solid rgba(209, 213, 219);
     --borderRadius: 0.375rem;
