@@ -1,5 +1,5 @@
 import { times, weekdays, weekend } from './constant'
-import { boolSaveToLocal, courses, idMap } from './store'
+import { boolSaveToLocal, courses, idMap, toast } from './store'
 import { get_store_value } from 'svelte/internal'
 import { Writable } from 'svelte/store'
 
@@ -100,6 +100,8 @@ export function addCourse(course) {
       $(courses).get(key).warn = true
       updateWritable(courses)
 
+      hint('课程冲突', 'danger')
+
       sleep(500).then(() => {
         if ($(courses).has(key)) {
           $(courses).get(key).warn = false
@@ -117,9 +119,20 @@ export function addCourse(course) {
       let options = {id: id, course: course, timeInfo: info, position: position, warn: false}
       $(courses).set(key, options)
       updateWritable(courses)
+      hint('添加成功')
     })
     $(idMap).set(id, keys)
     updateWritable(idMap)
     saveToLocal()
   }
+}
+
+export function hint(content: string, type: string = 'success', duration: number = 3000) {
+  $(toast).set('content', content)
+  $(toast).set('type', type)
+  updateWritable(toast)
+  sleep(duration).then(() => {
+    $(toast).clear()
+    updateWritable(toast)
+  })
 }

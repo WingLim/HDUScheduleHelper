@@ -1,9 +1,12 @@
 <script lang="ts">
   import Schedule from './components/Schedule.svelte'
+  import Toast from './components/elements/Toast.svelte'
+  import { hint } from './lib/utils'
 </script>
 
 <main>
   <Schedule />
+  <Toast />
 </main>
 
 <style>

@@ -7,7 +7,7 @@
   import Input from '../components/elements/Input.svelte'
   import { apiUrl } from '../config'
   import { times } from '../lib/constant'
-  import { addCourse } from '../lib/utils'
+  import { addCourse, hint } from '../lib/utils'
   
 
   let id: string
@@ -58,7 +58,7 @@
       exportSchedule(html)
     })
     .catch(err => {
-      console.log(err)
+      hint('获取失败', 'danger')
     })
   }
 
@@ -103,6 +103,7 @@
     fetch(buildAPIUrl(arr))
     .then(function(resp) {
       if (resp.status == 200) {
+        hint('获取成功')
         loading = false
         success = true
         localStorage.setItem('id', id)
