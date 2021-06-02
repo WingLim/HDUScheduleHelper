@@ -11,6 +11,7 @@
   }
 </script>
 
+{#if $boolSearchBar}
 <div class="h-full bg-white shadow-xl flex flex-col">
   <Header />
   <div class="py-4 px-5">
@@ -23,6 +24,7 @@
     {/if}
   </div>
 </div>
+{/if}
 
 <style>
   :global(.mt-4) {

@@ -118,9 +118,6 @@
   .showSearchBarWidth {
     @apply w-[60%] <sm:w-0;
   }
-  .showSearchBarWidth div {
-    @apply <sm:hidden;
-  }
   .course {
     @apply border border-gray-300 border-solid;
   }
