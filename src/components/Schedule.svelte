@@ -36,8 +36,8 @@
 
 <div class="{$boolSearchBar ? 'showSearchBarFlex': ''}" >
   <div class="main {$boolSearchBar ? 'showSearchBarWidth': ''}">
-  <div class="flex justify-between px-5 items-center">
-    <h1 class="m-0 <sm:text-lg">HDU 课程助手</h1>
+  <div class="flex justify-between px-5 items-center <sm:px-0">
+    <h1 class="m-0 <xs:text-base <sm:text-lg">HDU 课程助手</h1>
     <div class="flex items-center gap-1">
       <GetSchedule />
       <Button on:click={toggleSearch} type="primary">
@@ -94,18 +94,22 @@
   }
   .searchBar {
     @apply w-0;
-    @apply transition-all ease-linear duration-400;
+    @apply transition-width ease-linear duration-400;
+    will-change: width;
   }
   .searchBarWidth {
-    @apply w-[40%];
-    @apply <sm:w-full;
+    @apply w-[40%] <sm:w-full;
   }
-  .main {
-    @apply w-[100%];
-    @apply transition-all ease-linear duration-400;
+  .showSearchBarWidth div {
+    @apply <sm:hidden;
   }
   .showSearchBarFlex {
     @apply flex;
+  }
+  .main {
+    @apply w-full;
+    @apply transition-width ease-linear duration-400;
+    will-change: width;
   }
   .showSearchBarWidth {
     @apply w-[60%] <sm:w-0;

@@ -11,20 +11,18 @@
   }
 </script>
 
-{#if $boolSearchBar}
-  <div class="h-full bg-white shadow-xl flex flex-col">
-    <Header />
-    <div class="py-4 px-5">
-      <Form {page} />
-      <div class="pt-2 max-h-[90vh] overflow-auto">
-        <Table />
-      </div>
-      {#if $boolMoreButton}
-      <Button className="mt-4" on:click={showMore} content="查看更多" />
-      {/if}
+<div class="h-full bg-white shadow-xl flex flex-col">
+  <Header />
+  <div class="py-4 px-5">
+    <Form {page} />
+    <div class="pt-2 max-h-[90vh] overflow-auto">
+      <Table />
     </div>
+    {#if $boolMoreButton}
+    <Button className="mt-4" on:click={showMore} content="查看更多" />
+    {/if}
   </div>
-{/if}
+</div>
 
 <style>
   :global(.mt-4) {

@@ -24,6 +24,7 @@
   button {
     @apply inline-flex justify-center items-center;
     @apply text-black border-0 rounded-md p-2 text-base shadow-md cursor-pointer;
+    @apply <sm:text-xs;
   }
   button:hover {
     @apply shadow-lg;
