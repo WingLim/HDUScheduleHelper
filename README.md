@@ -11,6 +11,8 @@
 
 **注意**: Session 需要手动获取
 
+如果担心安全问题，请查看 [corsproxy](https://github.com/WingLim/HDUScheduleHelper/tree/main/corsproxy) 自行部署。
+
 登陆并打开 [选课系统](http://jxgl.hdu.edu.cn/), 按 **F12** 打开开发者工具。
 
 点击 **Application**, 选择 **Cookies**。

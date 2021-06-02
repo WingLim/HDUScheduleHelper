@@ -7,3 +7,4 @@ if (api == 'remote') {
 }
 
 export const apiUrl = url
+export const corsUrl = 'https://cors.lim.workers.dev/'

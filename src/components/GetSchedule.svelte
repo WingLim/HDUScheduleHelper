@@ -8,6 +8,7 @@
   import { apiUrl } from '../config'
   import { times } from '../lib/constant'
   import { addCourse, hint } from '../lib/utils'
+  import { corsUrl } from '../config'
   
 
   let id: string
@@ -22,7 +23,6 @@
     boolMenu = !boolMenu
   }
 
-  const corsUrl = 'https://cors.lim.workers.dev/'
   const scheduleUrl = 'http://jxgl.hdu.edu.cn/xskbcx.aspx'
 
   function buildCookie(sessionId: string, route: string) {
