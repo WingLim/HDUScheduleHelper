@@ -1,6 +1,9 @@
 {
   "name": "hduschedulehelper",
+  "description": "A HDU schedule arrangement helper",
   "version": "0.0.0",
+  "author": "WingLim",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
