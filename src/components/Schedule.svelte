@@ -85,13 +85,13 @@
 <style>
   .schedule {
     @apply grid w-full;
-    grid-template-rows: repeat(12, minmax(3rem, 6rem));
+    grid-template-rows: repeat(12, 5rem);
   }
   .weekdayMode {
-    @apply grid-cols-6;
+    grid-template-columns: 8rem repeat(5, minmax(0, 1fr));
   }
   .weekendMode {
-    @apply grid-cols-8;
+    grid-template-columns: 8rem repeat(7, minmax(0, 1fr));
   }
   .scheduleTableBorder {
     @apply border-gray-300 border-0 border-b border-solid;
