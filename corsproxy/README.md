@@ -8,8 +8,10 @@
 
 ## 请求格式
 
-`url` 为需要请求的网站
-`cookie` 为请求要携带的 Cookie
+- `url` - 需要请求的网站
+
+- `cookie` - 请求要携带的 Cookie
+
 使用 `|` 分割 `url` 和 `cookie`
 ```
 https://cors.lim.workers.dev/url|cookie
