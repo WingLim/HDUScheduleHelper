@@ -7,7 +7,7 @@ module.exports =  defineConfig({
   },
   theme: {
     screens: {
-      xs: '380px',
+      xs: '420px',
       sm: '640px'
     },
     extend: {
