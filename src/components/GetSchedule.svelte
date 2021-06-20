@@ -59,6 +59,7 @@
       exportSchedule(html)
     })
     .catch(err => {
+      loading = false
       hint('获取失败', 'danger')
     })
   }
