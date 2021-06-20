@@ -109,6 +109,7 @@
         success = true
         localStorage.setItem('id', id)
         localStorage.setItem('name', name)
+        localStorage.setItem('route', route)
         localStorage.setItem('session', session)
       }
       return resp.json()
@@ -143,6 +144,7 @@
   onMount(() => {
     id = localStorage.getItem('id')
     name = localStorage.getItem('name')
+    route = localStorage.getItem('route')
     session = localStorage.getItem('session')
   })
 </script>
