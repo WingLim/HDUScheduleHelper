@@ -9,7 +9,7 @@
 
 ### 获取课表
 
-**注意**: Session 需要手动获取
+**注意**: Route 和 Session 需要手动获取
 
 如果担心安全问题，请查看 [corsproxy](https://github.com/WingLim/HDUScheduleHelper/tree/main/corsproxy) 自行部署。
 
@@ -17,9 +17,9 @@
 
 点击 **Application**, 选择 **Cookies**。
 
-选择 **http://jxgl.hdu.edu.cn**, 复制 `ASP.NET_SessionId` 的 `Value`
+选择 **http://jxgl.hdu.edu.cn**, 复制 `route` 的 `Value` 和 `ASP.NET_SessionId` 的 `Value`
 
-![](https://cdn.jsdelivr.net/gh/WingLim/assets@master/images/20210602000658.png)
+![](https://cdn.jsdelivr.net/gh/WingLim/assets@master/images/20210620115306.png)
 
 ### 模糊搜索
 - 课程名
