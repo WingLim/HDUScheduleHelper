@@ -156,6 +156,12 @@
   {#if boolMenu}
   <div transition:slide class="absolute top-[120%] bg-white px-2 py-3 shadow-md rounded-md">
     <div class="flex flex-col gap-2">
+      <div class="justify-end flex">
+        <a target="_blank"
+        href="https://github.com/WingLim/HDUScheduleHelper#%E8%8E%B7%E5%8F%96%E8%AF%BE%E8%A1%A8">
+          如何获取？
+        </a>
+      </div>
       <Input bind:value={id} placeholder="学号" />
       <Input bind:value={name} placeholder="姓名" />
       <Input bind:value={route} placeholder="Route" />
