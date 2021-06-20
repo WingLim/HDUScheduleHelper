@@ -13,6 +13,7 @@
 
   let id: string
   let name: string
+  let route: string
   let session:string
 
   let loading = false
@@ -42,7 +43,7 @@
 
   async function getMySchedule() {
     loading = true
-    let cookie = buildCookie(session, '3d0c690852e4ff1f04aa9cef8f2994ef')
+    let cookie = buildCookie(session, route)
     let url = buildUrl(id, name, cookie)
     await fetch(url)
     .then(resp => {
@@ -154,6 +155,7 @@
     <div class="flex flex-col gap-2">
       <Input bind:value={id} placeholder="学号" />
       <Input bind:value={name} placeholder="姓名" />
+      <Input bind:value={route} placeholder="Route" />
       <Input bind:value={session} placeholder="Session" />
       <Button on:click={getMySchedule} {loading} content="获取" type={success? 'primary': ''} />
     </div>
