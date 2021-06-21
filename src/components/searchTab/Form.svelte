@@ -114,7 +114,7 @@
 
 <form on:submit|preventDefault={searchCourse} >
   <div class="flex gap-1 flex-row mb-4">
-    <Input placeholder="课程名" bind:value={title} on:input={searchCourse} />
+    <Input placeholder="课程名" bind:value={title} />
     <Button type="primary" content="搜索" />
     <Button type="{boolAdvance ? 'primary' : ''}" on:click="{() => {boolAdvance = !boolAdvance}}" content="高级搜索" />
   </div>
