@@ -9,6 +9,8 @@
   import { times, weekend } from '../lib/constant'
   import logo from '../assets/logo.png'
 
+  let credits: number = 0
+
   function toggleSearch() {
     $boolSearchBar = !$boolSearchBar
   }
@@ -30,8 +32,19 @@
     $idMap = new Map(JSON.parse(idMapStr))
   }
 
+  function calculate_credits() {
+    credits = 0
+    $courses.forEach(item => {
+      credits += item.course.credit
+    })
+  }
+  $: if ($courses) {
+    calculate_credits()
+  } 
+
   onMount(() => {
     readConfig()
+    calculate_credits()
   })
 </script>
 
@@ -43,6 +56,9 @@
       HDU 课程助手
     </h1>
     <div class="flex items-center gap-1">
+      <div>
+        已选学分: {credits}
+      </div>
       <GetSchedule />
       <Button on:click={toggleSearch} type="primary">
         <svg class="icon mr-1" viewBox="0 0 24 24">
