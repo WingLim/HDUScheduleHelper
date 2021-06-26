@@ -38,7 +38,7 @@
     credits = 0
     $idMap.forEach(item => {
       let one = $courses.get(item[0])
-      credits += parseInt(one.course.credit)
+      credits += parseFloat(one.course.credit)
     })
   }
   $: if ($idMap) {
