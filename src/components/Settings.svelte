@@ -5,7 +5,7 @@
   import { boolSaveToLocal, boolWeekendMode, weekdaysStore } from '../lib/store'
   import { weekdays, weekend } from '../lib/constant'
 
-  let defaultSearch: boolean
+  let defaultSearch: boolean = true
 
   let boolMenu = false
   function toggleMenu() {
