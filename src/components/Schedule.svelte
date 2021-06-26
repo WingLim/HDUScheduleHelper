@@ -32,13 +32,16 @@
     $idMap = new Map(JSON.parse(idMapStr))
   }
 
+  console.log($idMap)
+
   function calculate_credits() {
     credits = 0
-    $courses.forEach(item => {
-      credits += item.course.credit
+    $idMap.forEach(item => {
+      let one = $courses.get(item[0])
+      credits += parseInt(one.course.credit)
     })
   }
-  $: if ($courses) {
+  $: if ($idMap) {
     calculate_credits()
   } 
 
