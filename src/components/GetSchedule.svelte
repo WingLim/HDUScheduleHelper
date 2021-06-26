@@ -5,10 +5,9 @@
   import { onMount } from 'svelte'
   import Button from '../components/elements/Button.svelte'
   import Input from '../components/elements/Input.svelte'
-  import { apiUrl } from '../config'
+  import { apiUrl, corsUrl } from '../config'
   import { times } from '../lib/constant'
   import { addCourse, hint } from '../lib/utils'
-  import { corsUrl } from '../config'
   
 
   let id: string
