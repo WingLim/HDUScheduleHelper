@@ -76,6 +76,7 @@
   
   async function searchCourse() {
     page = 0
+    $boolMoreButton = true
     await fetch(buildRequestUrl())
     .then(function(resp) {
       return resp.json()
