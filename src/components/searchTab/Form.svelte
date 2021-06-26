@@ -3,7 +3,7 @@
   import Button from '../elements/Button.svelte'
   import Input from '../elements/Input.svelte'
   import { slide } from 'svelte/transition'
-  import { searchResult, boolMoreButton } from '../../lib/store'
+  import { searchResult, boolMoreButton, loadingMore } from '../../lib/store'
   import { apiUrl } from '../../config'
   import { propertyItems, weekdayItems, timeItems  } from '../../lib/constant'
 
@@ -16,6 +16,7 @@
   let paramsMap = new Map()
   const groupBy = (item: any) => item.group
 
+  let loading = false
   // 重新赋值 paramsMap, 触发 svelte 更新
   function updateParamsMap() {
     paramsMap = paramsMap
@@ -69,6 +70,7 @@
       params += '&time=' + paramsMap.get('time')
     }
     if (page) {
+      $loadingMore = true
       params += '&page=' + page 
     }
     return apiUrl + params
@@ -77,8 +79,12 @@
   async function searchCourse() {
     page = 0
     $boolMoreButton = true
+    loading = true
     await fetch(buildRequestUrl())
     .then(function(resp) {
+      if (resp.status == 200) {
+        loading = false
+      }
       return resp.json()
     })
     .then(function(json) {
@@ -92,6 +98,9 @@
   async function loadMore() {
     await fetch(buildRequestUrl())
     .then(function(resp) {
+      if (resp.status == 200) {
+        $loadingMore = false
+      }
       return resp.json()
     })
     .then(function(json) {
@@ -116,7 +125,7 @@
 <form on:submit|preventDefault={searchCourse} >
   <div class="flex gap-1 flex-row mb-4">
     <Input placeholder="课程名" bind:value={title} />
-    <Button type="primary" content="搜索" />
+    <Button type="primary" {loading} content="搜索" />
     <Button type="{boolAdvance ? 'primary' : ''}" on:click="{() => {boolAdvance = !boolAdvance}}" content="高级搜索" />
   </div>
   

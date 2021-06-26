@@ -6,6 +6,7 @@ export let idMap = writable(new Map())
 
 export let searchResult = writable([])
 export let boolMoreButton = writable(true)
+export let loadingMore = writable(false)
 
 export let weekdaysStore = writable(weekdays)
 

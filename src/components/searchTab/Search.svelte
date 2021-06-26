@@ -3,7 +3,7 @@
   import Form from './Form.svelte'
   import Header from './Header.svelte'
   import Button from '../elements/Button.svelte'
-  import { boolMoreButton, boolSearchBar } from '../../lib/store'
+  import { boolMoreButton, boolSearchBar, loadingMore } from '../../lib/store'
 
   let page = 0
   function showMore() {
@@ -20,7 +20,7 @@
       <Table />
     </div>
     {#if $boolMoreButton}
-    <Button className="mt-4" on:click={showMore} content="查看更多" />
+    <Button className="mt-4" loading={$loadingMore} on:click={showMore} content="查看更多" />
     {/if}
   </div>
 </div>
