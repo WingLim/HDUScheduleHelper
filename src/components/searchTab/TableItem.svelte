@@ -30,7 +30,14 @@
   <td rowspan="1" colspan="2">
     <div class="time-location">
       <div>
-        <p class="weekday">{item.time_info[0].weekday}</p>
+        <p class="weekday">
+          {item.time_info[0].weekday}
+          {#if item.week_info.flag == 1}
+          (单)
+          {:else if item.week_info.flag == 2}
+          (双)
+          {/if}
+        </p>
         <span>{item.time_info[0].start}-{item.time_info[0].end}</span>
       </div>
       <div>
@@ -47,7 +54,14 @@
   <td rowspan="1" colspan="2">
     <div class="time-location">
       <div>
-        <p>{item.time_info[1].weekday}</p>
+        <p>
+          {item.time_info[1].weekday}
+          {#if item.week_info.flag == 1}
+          (单)
+          {:else if item.week_info.flag == 2}
+          (双)
+          {/if}
+        </p>
         <span>{item.time_info[1].start}-{item.time_info[1].end}</span>
       </div>
       <div>
